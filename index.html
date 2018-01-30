@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>LCT Data Grid Test</title>
+</head>
+<body>
+        <style>
+                .LCTDataGrid {
+                    --GridHeaderBackColor: orange;
+                    --GridHeaderForeColor: black;
+                    --GridHeaderOutlineColor: grey;
+                    --GridHeaderFont: 14pt Arial;
+                    --GridHeader:['COL1','COL2','COL3','COL4','COL5','COL6','COL7','COL8'];
+                    --TitleBackColor: #4e4e8b;
+                    --TitleForeColor: white;
+                    --TitleFont: 18pt Arial;
+                    --Title: This is a really long title created using custom CSS Properties;
+
+                    --GridRows: [
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8'],
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8'],
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8'],
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8'],
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8'],
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8'],
+                    ['Data 1','Data 2','Data 3','Data 4','Date 5','Data 6','Data 7','Data 8']
+                    ];
+                    --CellFont: 12pt Courier;
+                    --CellBackColor: White;
+                    --CellForeColor: Black;
+                    --CellOutlineColor: lightblue;
+
+                }
+            
+        </style>
+            
+
+    <div id="LCTDataGrid" width="100%" height="200px">
+        <canvas id="LCTDataGridCanvas" class="LCTDataGrid" height="200"></canvas>
+    </div>
+
+    <script src="JS/jquery-1.10.2.min.js"></script>
+
+    <script src="LCTDataGrid.js"></script>
+    <script type="text/javascript">
+        var el = document.getElementById('LCTDataGridCanvas');
+
+        var DG = new LCTDataGrid(el);
+
+        DG.FillCanvas();
+
+    </script>
+
+    <input type="button" 
+    onclick="DG.SetGridHeader(['COLUMN 1','COLUMN 2','COLUMN 3','COLUMN 4','COLUMN 5',
+    'A REALLY Long Column Name','COLUMN 7','COLUMN 8']);" 
+    id="btn1" 
+    value="Set Header">
+
+    <!--
+
+    <input type="button" onclick="SP.SetBackgroundColor('#ff9999')" id="btn2" value="Red Background">
+
+    <input type="button" onclick="SP.SetBackgroundColor('#9999ff')" id="btn3" value="Blue Background">
+
+    <input type="button" onclick="SP.SetBackgroundColor('#99ff99')" id="btn2" value="Green Background">
+
+    <input type="button" onclick="console.log(SP.GetImage());" id="btncode" value="Gimme Code">
+
+    <input type="button" onclick="document.write(SP.GetImage());" id="btnimag" value="Picture">
+-->
+</body>
+</html>
