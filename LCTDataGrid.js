@@ -122,6 +122,11 @@ var LCTDataGrid = /** @class */ (function () {
             _this.LastMouseY = 0;
             _this.ScrollButtonDown = false;
         };
+        this.HandleMouseOut = function (ev) {
+            _this.LastMouseX = 0;
+            _this.LastMouseY = 0;
+            _this.ScrollButtonDown = false;
+        };
         this.TheCanvas = element;
         //this.TheDiv = container;
         // Register an event listener to
@@ -129,6 +134,7 @@ var LCTDataGrid = /** @class */ (function () {
         // the window is resized.
         window.addEventListener("resize", this.resizeCanvas, false);
         this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
+        this.TheCanvas.addEventListener("mouseout", this.HandleMouseOut);
         this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
         this.TheCanvas.addEventListener("mouseup", this.HandleMouseUp);
         this.TheCanvas.addEventListener("touchstart", this.HandleTouchStart);

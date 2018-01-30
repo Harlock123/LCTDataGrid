@@ -58,6 +58,8 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
 
+    this.TheCanvas.addEventListener("mouseout", this.HandleMouseOut);
+
     this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
 
     this.TheCanvas.addEventListener("mouseup", this.HandleMouseUp);
@@ -538,6 +540,12 @@ class LCTDataGrid {
     this.ScrollButtonDown = false;
 
   };
+
+  HandleMouseOut = (ev: MouseEvent) => {
+    this.LastMouseX = 0;
+    this.LastMouseY = 0;
+    this.ScrollButtonDown = false;
+  }
 
   GetImage() {
     return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';
