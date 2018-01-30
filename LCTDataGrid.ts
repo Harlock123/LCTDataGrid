@@ -31,6 +31,7 @@ class LCTDataGrid {
   GridHeader: string[] = [];
   GridRows: string[] = [];
   GridCols: string[] = [];
+  GridHeaderHeight: number = 0;
 
   CellBackColor: string = "#FFFFFF";
   CellForeColor: string = "#000000";
@@ -311,66 +312,43 @@ class LCTDataGrid {
     }
   }
 
+  CaclulateTitleHeightAndHeaderHeight()
+  {
+    var ctx = this.TheCanvas.getContext("2d");
+    if (this.TitleVisible)
+    {
+      ctx.font = this.TitleFont;
+      this.TitleHeight = ctx.measureText("M").width * 1.3;
+    }
+    else
+    {
+      this.TitleHeight = 0;
+    }
+
+    if (this.GridHeaderVisible) {
+      ctx.font = this.GridHeaderFont;
+      this.GridHeaderHeight = ctx.measureText("M").width * 1.3;
+    }
+    else
+    {
+      this.GridHeaderHeight = 0;
+    }
+
+  }
+
   RedrawCanvas() {
     var ctx = this.TheCanvas.getContext("2d");
 
     var cy = 0;
 
     this.CalculateColumnWidths();
+    this.CaclulateTitleHeightAndHeaderHeight();
 
-    // Draw Title
-    if (this.TitleVisible) {
-      ctx.font = this.TitleFont;
-      var wid = ctx.measureText(this.Title).width;
-      var hei = ctx.measureText("M").width * 1.3;
-      this.TitleHeight = hei;
+    cy = this.TitleHeight + this.GridHeaderHeight;
 
-      // draw the title bar
-      ctx.fillStyle = this.TitleBackColor;
-      ctx.fillRect(0 , 0, this.TheCanvas.width, this.TitleHeight);
-
-      //ctx.translate(0.5, 0.5);
-      ctx.fillStyle = this.TitleForeColor;
-      ctx.fillText(this.Title, 2, this.TitleHeight - 6);
-
-      cy = this.TitleHeight;
-    }
-
-    // Draw Header
-    if (this.GridHeaderVisible) {
-      ctx.font = this.GridHeaderFont;
-      var lx = 0;
-      var ly = this.TitleHeight;
-
-      hei = ctx.measureText("M").width * 1.3;
-      cy += hei; // Cells will start rendering this distance from the top
-
-      //this.CellWidths = [];
-
-      for (var _i = 0; _i < this.GridHeader.length; _i++) {
-        // we need the index of the item and the item itself
-        // so I cant use just a for of
-
-        var it = this.GridHeader[_i];
-
-        // _i is the index
-        // it is the item
-
-        //wid = ctx.measureText(it).width;
-        wid = this.CellWidths[_i];
-        //this.CellWidths.push(wid+6);
-
-        ctx.fillStyle = this.GridHeaderBackColor;
-        ctx.fillRect(lx-this.HorizontalOffset, ly, wid, hei);
-        ctx.strokeStyle = this.GridHeaderOutlineColor;
-        ctx.strokeRect(lx-this.HorizontalOffset, ly, wid, hei);
-
-        ctx.fillStyle = this.GridHeaderForeColor;
-        ctx.fillText(it, lx + 3 - this.HorizontalOffset, ly + hei-5);
-
-        lx = lx + wid;
-      }
-    }
+    var hei = 0;
+    var lx = 0;
+    var ly = 0;
 
     ctx.font = this.CellFont;
     ctx.fillStyle = this.CellBackColor;
@@ -390,13 +368,13 @@ class LCTDataGrid {
         hei = this.CellHeights[_currow];
 
         ctx.fillStyle = this.CellBackColor;
-        ctx.fillRect(lx-this.HorizontalOffset, ly, this.CellWidths[_curcol], hei);
+        ctx.fillRect(lx-this.HorizontalOffset, ly-this.VerticleOffset, this.CellWidths[_curcol], hei);
         ctx.strokeStyle = this.CellOutlineColor;
-        ctx.strokeRect(lx-this.HorizontalOffset, ly, this.CellWidths[_curcol], hei);
+        ctx.strokeRect(lx-this.HorizontalOffset, ly-this.VerticleOffset, this.CellWidths[_curcol], hei);
         
         ctx.fillStyle = this.CellForeColor;
 
-        this.fillTextMultiLine(ctx,this.GridRows[_currow][_curcol],lx + 3 - this.HorizontalOffset, ly + hei-3);
+        this.fillTextMultiLine(ctx,this.GridRows[_currow][_curcol],lx + 3 - this.HorizontalOffset, ly + hei-3 - this.VerticleOffset);
 
         //ctx.fillText(this.GridRows[_currow][_curcol], lx + 3, ly + hei-3);
 
@@ -405,6 +383,53 @@ class LCTDataGrid {
       }
 
       cy = cy + hei;
+    }
+
+    // Draw Title
+    if (this.TitleVisible) {
+      ctx.font = this.TitleFont;
+      var wid = ctx.measureText(this.Title).width;
+      
+      // draw the title bar
+      ctx.fillStyle = this.TitleBackColor;
+      ctx.fillRect(0 , 0, this.TheCanvas.width, this.TitleHeight);
+
+      //ctx.translate(0.5, 0.5);
+      ctx.fillStyle = this.TitleForeColor;
+      ctx.fillText(this.Title, 2, this.TitleHeight - 6);
+
+    }
+
+    // Draw Header
+    if (this.GridHeaderVisible) {
+      ctx.font = this.GridHeaderFont;
+      
+      ly = this.TitleHeight;
+      lx = 0;
+
+      for (var _i = 0; _i < this.GridHeader.length; _i++) {
+        // we need the index of the item and the item itself
+        // so I cant use just a for of
+
+        var it = this.GridHeader[_i];
+
+        // _i is the index
+        // it is the item
+
+        //wid = ctx.measureText(it).width;
+        wid = this.CellWidths[_i];
+        //this.CellWidths.push(wid+6);
+
+        ctx.fillStyle = this.GridHeaderBackColor;
+        ctx.fillRect(lx-this.HorizontalOffset, ly, wid, this.GridHeaderHeight);
+        ctx.strokeStyle = this.GridHeaderOutlineColor;
+        ctx.strokeRect(lx-this.HorizontalOffset, ly, wid, this.GridHeaderHeight);
+
+        ctx.fillStyle = this.GridHeaderForeColor;
+        ctx.fillText(it, lx + 3 - this.HorizontalOffset, ly + this.GridHeaderHeight-5);
+
+        lx = lx + wid;
+      }
     }
   }
 
@@ -485,7 +510,7 @@ class LCTDataGrid {
         //}
         this.LastMouseX = ev.offsetX
 
-        this.FillCanvas();
+        //this.FillCanvas();
         
       }
       else
@@ -502,14 +527,45 @@ class LCTDataGrid {
 
           this.LastMouseX = ev.offsetX
 
-          this.FillCanvas();
+          //this.FillCanvas();
         }
       }
 
+      if (this.LastMouseY < ev.offsetY)
+      {
+        // moving left to right
+        this.VerticleOffset += ev.offsetY - this.LastMouseY;
+        
+        //if (this.HorizontalOffset>0)
+        //{
+          //this.HorizontalOffset = 0;
+        //}
+        this.LastMouseY = ev.offsetY
 
+        //this.FillCanvas();
+        
+      }
+      else
+      {
+        if (this.LastMouseY > ev.offsetY)
+        {
+          // scrolling right to left
+          this.VerticleOffset -= this.LastMouseY - ev.offsetY;
+
+          if (this.VerticleOffset<0)
+          {
+            this.VerticleOffset = 0;
+          }
+
+          this.LastMouseY = ev.offsetY
+
+          //this.FillCanvas();
+        }
+      }
+
+      this.FillCanvas();
 
       //this.HorizontalOffset += this.LastMouseX +
-
 
     }
   };
@@ -531,9 +587,8 @@ class LCTDataGrid {
   };
 
   HandleMouseUp = (ev: MouseEvent) => {
-    //this.Drawing = false;
-    //this.lastx = -1;
-    //this.lasty = -1;
+    // when the user lets go of the mouse button reset the scrollable 
+    // stuff to initialized
 
     this.LastMouseX = 0;
     this.LastMouseY = 0;
@@ -542,6 +597,9 @@ class LCTDataGrid {
   };
 
   HandleMouseOut = (ev: MouseEvent) => {
+    // when the mouse leaves the canvas reset the scrollable stuff to initialized 
+    // state...
+
     this.LastMouseX = 0;
     this.LastMouseY = 0;
     this.ScrollButtonDown = false;
