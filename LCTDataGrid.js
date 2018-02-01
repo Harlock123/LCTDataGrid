@@ -529,6 +529,26 @@ var LCTDataGrid = /** @class */ (function () {
         this.lastx = -1;
         this.lasty = -1;
     };
+    // URL Populate Methods
+    LCTDataGrid.prototype.PopulateFromJSONUrl = function (DukeOfURL) {
+        var Self = this;
+        $.get(DukeOfURL, function (data, status) {
+            Self.GridHeader = data.Header;
+            Self.GridRows = data.Data;
+            Self.InitializeGridParameters();
+            Self.FillCanvas();
+        }, 'json');
+    };
+    LCTDataGrid.prototype.HandlePopulateFromJSONUrlReturn = function (data, status, hdr) {
+        // data is the Data returned
+        // status should be 'success' or 'timeout' or 'error' or 'parseerror'
+        // hdr is the header object
+        //console.log(data);
+        this.GridHeader = data.Header;
+        this.GridRows = data.Data;
+        this.InitializeGridParameters();
+        this.FillCanvas();
+    };
     LCTDataGrid.prototype.SetGridHeader = function (Headers) {
         this.GridHeader = Headers;
         this.CalculateColumnWidths();

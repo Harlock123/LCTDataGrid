@@ -2,7 +2,7 @@
 
 class LCTDataGrid {
   TheCanvas: HTMLCanvasElement;
-
+ 
   Drawing: boolean = false;
   HorizontalScrollBarVisible: boolean = false;
   VerticleScrollBarVisible: boolean = false;
@@ -294,7 +294,6 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-
   SetHeaderBackgroundColor(col: string) {
     this.GridHeaderBackColor = col;
     this.FillCanvas();
@@ -335,7 +334,7 @@ class LCTDataGrid {
 
   }
 
-  private InitializeGridParameters() {
+  InitializeGridParameters() {
     this.ScrollButtonDown = false;
     this.LastMouseX = 0;
     this.LastMouseY = 0;
@@ -360,7 +359,7 @@ class LCTDataGrid {
     }
   }
 
-  CalculateColumnWidths()
+  private CalculateColumnWidths()
   {
     this.CellWidths = [];
     this.CellHeights = [];
@@ -437,7 +436,7 @@ class LCTDataGrid {
     }
   }
 
-  CaclulateTitleHeightAndHeaderHeight()
+  private CaclulateTitleHeightAndHeaderHeight()
   {
     var ctx = this.TheCanvas.getContext("2d");
     if (this.TitleVisible)
@@ -589,6 +588,24 @@ class LCTDataGrid {
     this.lastx = -1;
     this.lasty = -1;
   }
+
+  // URL Populate Methods
+
+  PopulateFromJSONUrl(DukeOfURL: string)
+  {
+
+    var Self = this;
+
+    $.get(DukeOfURL,function(data,status){
+      Self.GridHeader = data.Header;
+      Self.GridRows = data.Data;
+
+      Self.InitializeGridParameters();
+      Self.FillCanvas();
+      
+    },'json')
+  }
+  
 
   SetGridHeader(Headers: string[]) {
     this.GridHeader = Headers;
