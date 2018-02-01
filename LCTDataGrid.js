@@ -52,12 +52,21 @@ var LCTDataGrid = /** @class */ (function () {
             //this.Drawing = true;
             //this.lastx = ev.touches[0].clientX;
             //this.lasty = ev.touches[0].clientY;
+            if (!_this.ScrollButtonDown) {
+                // we should validate where we are mousedowned
+                _this.LastMouseX = ev.touches[0].clientX;
+                _this.LastMouseY = ev.touches[0].clientY;
+                _this.ScrollButtonDown = true;
+            }
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
         this.HandleTouchEnd = function (ev) {
             //this.Drawing = false;
             //this.lastx = -1;
             //this.lasty = -1;
+            _this.LastMouseX = 0;
+            _this.LastMouseY = 0;
+            _this.ScrollButtonDown = false;
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
         this.HandleTouchMove = function (ev) {
@@ -70,6 +79,53 @@ var LCTDataGrid = /** @class */ (function () {
             //  this.lastx = ev.touches[0].clientX;
             //  this.lasty = ev.touches[0].clientY;
             //}
+            if (_this.ScrollButtonDown) {
+                // we are scrolling
+                if (_this.LastMouseX < ev.touches[0].clientX) {
+                    // moving left to right
+                    _this.HorizontalOffset += ev.touches[0].clientX - _this.LastMouseX;
+                    //if (this.HorizontalOffset>0)
+                    //{
+                    //this.HorizontalOffset = 0;
+                    //}
+                    _this.LastMouseX = ev.touches[0].clientX;
+                    //this.FillCanvas();
+                }
+                else {
+                    if (_this.LastMouseX > ev.touches[0].clientX) {
+                        // scrolling right to left
+                        _this.HorizontalOffset -= _this.LastMouseX - ev.touches[0].clientX;
+                        if (_this.HorizontalOffset < 0) {
+                            _this.HorizontalOffset = 0;
+                        }
+                        _this.LastMouseX = ev.touches[0].clientX;
+                        //this.FillCanvas();
+                    }
+                }
+                if (_this.LastMouseY < ev.touches[0].clientY) {
+                    // moving left to right
+                    _this.VerticleOffset += ev.touches[0].clientY - _this.LastMouseY;
+                    //if (this.HorizontalOffset>0)
+                    //{
+                    //this.HorizontalOffset = 0;
+                    //}
+                    _this.LastMouseY = ev.touches[0].clientY;
+                    //this.FillCanvas();
+                }
+                else {
+                    if (_this.LastMouseY > ev.touches[0].clientY) {
+                        // scrolling right to left
+                        _this.VerticleOffset -= _this.LastMouseY - ev.touches[0].clientY;
+                        if (_this.VerticleOffset < 0) {
+                            _this.VerticleOffset = 0;
+                        }
+                        _this.LastMouseY = ev.touches[0].clientY;
+                        //this.FillCanvas();
+                    }
+                }
+                _this.FillCanvas();
+                //this.HorizontalOffset += this.LastMouseX +
+            }
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
         this.HandleMouseMove = function (ev) {
@@ -538,16 +594,6 @@ var LCTDataGrid = /** @class */ (function () {
             Self.InitializeGridParameters();
             Self.FillCanvas();
         }, 'json');
-    };
-    LCTDataGrid.prototype.HandlePopulateFromJSONUrlReturn = function (data, status, hdr) {
-        // data is the Data returned
-        // status should be 'success' or 'timeout' or 'error' or 'parseerror'
-        // hdr is the header object
-        //console.log(data);
-        this.GridHeader = data.Header;
-        this.GridRows = data.Data;
-        this.InitializeGridParameters();
-        this.FillCanvas();
     };
     LCTDataGrid.prototype.SetGridHeader = function (Headers) {
         this.GridHeader = Headers;

@@ -334,7 +334,7 @@ class LCTDataGrid {
 
   }
 
-  InitializeGridParameters() {
+  private InitializeGridParameters() {
     this.ScrollButtonDown = false;
     this.LastMouseX = 0;
     this.LastMouseY = 0;
@@ -620,6 +620,15 @@ class LCTDataGrid {
     //this.lastx = ev.touches[0].clientX;
     //this.lasty = ev.touches[0].clientY;
 
+    if (!this.ScrollButtonDown)
+    {
+      // we should validate where we are mousedowned
+
+      this.LastMouseX = ev.touches[0].clientX;
+      this.LastMouseY = ev.touches[0].clientY;
+      this.ScrollButtonDown = true;
+    }
+
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
 
@@ -627,6 +636,10 @@ class LCTDataGrid {
     //this.Drawing = false;
     //this.lastx = -1;
     //this.lasty = -1;
+
+    this.LastMouseX = 0;
+    this.LastMouseY = 0;
+    this.ScrollButtonDown = false;
 
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
@@ -644,6 +657,79 @@ class LCTDataGrid {
     //  this.lastx = ev.touches[0].clientX;
     //  this.lasty = ev.touches[0].clientY;
     //}
+
+    if (this.ScrollButtonDown)
+    {
+      // we are scrolling
+      if (this.LastMouseX < ev.touches[0].clientX)
+      {
+        // moving left to right
+        this.HorizontalOffset += ev.touches[0].clientX - this.LastMouseX;
+        
+        //if (this.HorizontalOffset>0)
+        //{
+          //this.HorizontalOffset = 0;
+        //}
+        this.LastMouseX = ev.touches[0].clientX
+
+        //this.FillCanvas();
+        
+      }
+      else
+      {
+        if (this.LastMouseX > ev.touches[0].clientX)
+        {
+          // scrolling right to left
+          this.HorizontalOffset -= this.LastMouseX - ev.touches[0].clientX;
+
+          if (this.HorizontalOffset<0)
+          {
+            this.HorizontalOffset = 0;
+          }
+
+          this.LastMouseX = ev.touches[0].clientX
+
+          //this.FillCanvas();
+        }
+      }
+
+      if (this.LastMouseY < ev.touches[0].clientY)
+      {
+        // moving left to right
+        this.VerticleOffset += ev.touches[0].clientY - this.LastMouseY;
+        
+        //if (this.HorizontalOffset>0)
+        //{
+          //this.HorizontalOffset = 0;
+        //}
+        this.LastMouseY = ev.touches[0].clientY
+
+        //this.FillCanvas();
+        
+      }
+      else
+      {
+        if (this.LastMouseY > ev.touches[0].clientY)
+        {
+          // scrolling right to left
+          this.VerticleOffset -= this.LastMouseY - ev.touches[0].clientY;
+
+          if (this.VerticleOffset<0)
+          {
+            this.VerticleOffset = 0;
+          }
+
+          this.LastMouseY = ev.touches[0].clientY
+
+          //this.FillCanvas();
+        }
+      }
+
+      this.FillCanvas();
+
+      //this.HorizontalOffset += this.LastMouseX +
+
+    }
 
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
