@@ -27,6 +27,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.GridCols = [];
         this.GridHeaderHeight = 0;
         this.CellBackColor = "#FFFFFF";
+        this.AlternateCellBackColor = "#30F030";
+        this.AlternateRowColoring = false;
         this.CellForeColor = "#000000";
         this.CellOutlineColor = "#808080";
         this.CellFont = "14pt Courier";
@@ -165,6 +167,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.addEventListener("touchend", this.HandleTouchEnd);
         this.TheCanvas.addEventListener("touchmove", this.HandleTouchMove);
         this.ApplyCustomCSSAttributes();
+        this.InitializeGridParameters();
     }
     LCTDataGrid.prototype.ApplyCustomCSSAttributes = function () {
         // Extract From Any custom CSS here
@@ -235,6 +238,22 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.width = this.TheCanvas.offsetWidth;
         this.TheCanvas.height = this.TheCanvas.offsetHeight;
     };
+    LCTDataGrid.prototype.SetCellBackColor = function (col) {
+        this.CellBackColor = col;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetCellForeColor = function (col) {
+        this.CellForeColor = col;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetAlternateCellBackColor = function (col) {
+        this.AlternateCellBackColor = col;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetAlternateRowColoring = function (trigger) {
+        this.AlternateRowColoring = trigger;
+        this.FillCanvas();
+    };
     LCTDataGrid.prototype.SetTitleBackColor = function (col) {
         this.TitleBackColor = col;
         this.FillCanvas();
@@ -271,6 +290,20 @@ var LCTDataGrid = /** @class */ (function () {
         this.linecolor = col;
         this.FillCanvas();
     };
+    LCTDataGrid.prototype.SetGridRowsJSON = function (TheRows) {
+        this.GridRows = JSON.parse(TheRows);
+        this.InitializeGridParameters();
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.InitializeGridParameters = function () {
+        this.ScrollButtonDown = false;
+        this.LastMouseX = 0;
+        this.LastMouseY = 0;
+        this.lastx = 0;
+        this.lasty = 0;
+        this.HorizontalOffset = 0;
+        this.VerticleOffset = 0;
+    };
     LCTDataGrid.prototype.FillCanvas = function () {
         this.resize();
         this.ClearCanvas();
@@ -278,10 +311,10 @@ var LCTDataGrid = /** @class */ (function () {
     };
     LCTDataGrid.prototype.fillTextMultiLine = function (ctx, text, x, y) {
         var lineHeight = ctx.measureText("M").width * 1.2;
-        var lines = text.split("/\r\n|\r|\n/");
-        for (var i = 0; i < lines.length; ++i) {
+        var lines = text.split(/\r\n|\r|\n/);
+        for (var i = lines.length - 1; i >= 0; --i) {
             ctx.fillText(lines[i], x, y);
-            y += lineHeight;
+            y -= lineHeight + 2;
         }
     };
     LCTDataGrid.prototype.CalculateColumnWidths = function () {
@@ -303,10 +336,16 @@ var LCTDataGrid = /** @class */ (function () {
             var numlines = 1;
             for (var _curcol = 0; _curcol < this.GridRows[_currow].length; _curcol++) {
                 it = this.GridRows[_currow][_curcol];
-                wid = ctx.measureText(it).width + 6;
+                wid = 0; //ctx.measureText(it).width + 6;
                 hei = ctx.measureText("M").width * 1.2;
                 // figure out how many lines of output are in this text element
-                var celllines = it.split(/\r\n|\r|\n/).length;
+                var thelines = it.split(/\r\n|\r|\n/);
+                var celllines = thelines.length;
+                for (var cl = 0; cl < thelines.length; cl++) {
+                    var thewid = ctx.measureText(thelines[cl]).width + 6;
+                    if (thewid > wid)
+                        wid = thewid;
+                }
                 if (celllines > numlines) {
                     numlines = celllines;
                 }
@@ -364,7 +403,19 @@ var LCTDataGrid = /** @class */ (function () {
             for (var _curcol = 0; _curcol < this.GridRows[_currow].length; _curcol++) {
                 // iterate over each column in the current row
                 hei = this.CellHeights[_currow];
-                ctx.fillStyle = this.CellBackColor;
+                if (this.AlternateRowColoring) {
+                    if (_currow % 2 == 0) {
+                        // Its Even
+                        ctx.fillStyle = this.CellBackColor;
+                    }
+                    else {
+                        // its Odd
+                        ctx.fillStyle = this.AlternateCellBackColor;
+                    }
+                }
+                else {
+                    ctx.fillStyle = this.CellBackColor;
+                }
                 ctx.fillRect(lx - this.HorizontalOffset, ly - this.VerticleOffset, this.CellWidths[_curcol], hei);
                 ctx.strokeStyle = this.CellOutlineColor;
                 ctx.strokeRect(lx - this.HorizontalOffset, ly - this.VerticleOffset, this.CellWidths[_curcol], hei);
