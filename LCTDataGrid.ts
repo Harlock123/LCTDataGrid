@@ -13,6 +13,10 @@ class LCTDataGrid {
   linecolor: string = "#000000";
   backcolor: string = "#C0C0C0";
 
+  // Outline Stuff
+  OutlineOn: boolean = true;
+  OutlineColor: string = "#808080";
+
   // Title Stuff
   Title: string = "Grid Title Here";
   TitleHeight: number = 15;
@@ -169,7 +173,53 @@ class LCTDataGrid {
       this.CellFont = theval; 
     }
 
-    
+    theval = TheCSS.getPropertyValue("--OutlineOn");
+
+    if (theval !== undefined && theval !== "") {
+      if (theval.toLowerCase()==="true")
+        this.OutlineOn = true;
+      else
+        this.OutlineOn = false;
+    }
+
+    theval = TheCSS.getPropertyValue("--OutlineColor");
+
+    if (theval !== undefined && theval !== "") {
+      this.OutlineColor = theval; 
+    }
+
+    theval = TheCSS.getPropertyValue("--AlternateCellBackColor");
+
+    if (theval !== undefined && theval !== "") {
+      this.AlternateCellBackColor = theval; 
+    }
+
+    theval = TheCSS.getPropertyValue("--AlternateRowColoring");
+
+    if (theval !== undefined && theval !== "") {
+      if (theval.toLowerCase()==="true")
+        this.AlternateRowColoring = true;
+      else
+        this.AlternateRowColoring = false;
+    }
+
+    theval = TheCSS.getPropertyValue("--TitleVisible");
+
+    if (theval !== undefined && theval !== "") {
+      if (theval.toLowerCase()==="true")
+        this.TitleVisible = true;
+      else
+        this.TitleVisible = false;
+    }
+
+    theval = TheCSS.getPropertyValue("--GridHeaderVisible");
+
+    if (theval !== undefined && theval !== "") {
+      if (theval.toLowerCase()==="true")
+        this.GridHeaderVisible = true;
+      else
+        this.GridHeaderVisible = false;
+    }
 
   }
 
@@ -188,6 +238,16 @@ class LCTDataGrid {
     this.resize;
     this.FillCanvas();
   };
+
+  SetGridOutline(flag: boolean){
+    this.OutlineOn = flag;
+    this.FillCanvas();
+  }
+
+  SetGridOutlineColor(col: string) {
+    this.OutlineColor = col;
+    this.FillCanvas();
+  }
 
   SetCellBackColor(col: string) {
     this.CellBackColor = col;
@@ -223,6 +283,17 @@ class LCTDataGrid {
     this.TitleFont = fnt;
     this.FillCanvas();
   }
+
+  SetTitleVisible(flag: boolean) {
+    this.TitleVisible = flag;
+    this.FillCanvas();
+  }
+
+  SetHeaderVisible(flag: boolean) {
+    this.GridHeaderVisible = flag;
+    this.FillCanvas();
+  }
+
 
   SetHeaderBackgroundColor(col: string) {
     this.GridHeaderBackColor = col;
@@ -501,6 +572,12 @@ class LCTDataGrid {
 
         lx = lx + wid;
       }
+    }
+
+    // Outline?
+    if (this.OutlineOn) {
+      ctx.strokeStyle = this.OutlineColor;
+      ctx.strokeRect(0,0,this.TheCanvas.width,this.TheCanvas.height);
     }
   }
 

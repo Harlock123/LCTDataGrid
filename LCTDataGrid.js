@@ -9,6 +9,9 @@ var LCTDataGrid = /** @class */ (function () {
         this.lasty = -1;
         this.linecolor = "#000000";
         this.backcolor = "#C0C0C0";
+        // Outline Stuff
+        this.OutlineOn = true;
+        this.OutlineColor = "#808080";
         // Title Stuff
         this.Title = "Grid Title Here";
         this.TitleHeight = 15;
@@ -228,6 +231,42 @@ var LCTDataGrid = /** @class */ (function () {
         if (theval !== undefined && theval !== "") {
             this.CellFont = theval;
         }
+        theval = TheCSS.getPropertyValue("--OutlineOn");
+        if (theval !== undefined && theval !== "") {
+            if (theval.toLowerCase() === "true")
+                this.OutlineOn = true;
+            else
+                this.OutlineOn = false;
+        }
+        theval = TheCSS.getPropertyValue("--OutlineColor");
+        if (theval !== undefined && theval !== "") {
+            this.OutlineColor = theval;
+        }
+        theval = TheCSS.getPropertyValue("--AlternateCellBackColor");
+        if (theval !== undefined && theval !== "") {
+            this.AlternateCellBackColor = theval;
+        }
+        theval = TheCSS.getPropertyValue("--AlternateRowColoring");
+        if (theval !== undefined && theval !== "") {
+            if (theval.toLowerCase() === "true")
+                this.AlternateRowColoring = true;
+            else
+                this.AlternateRowColoring = false;
+        }
+        theval = TheCSS.getPropertyValue("--TitleVisible");
+        if (theval !== undefined && theval !== "") {
+            if (theval.toLowerCase() === "true")
+                this.TitleVisible = true;
+            else
+                this.TitleVisible = false;
+        }
+        theval = TheCSS.getPropertyValue("--GridHeaderVisible");
+        if (theval !== undefined && theval !== "") {
+            if (theval.toLowerCase() === "true")
+                this.GridHeaderVisible = true;
+            else
+                this.GridHeaderVisible = false;
+        }
     };
     LCTDataGrid.prototype.resize = function () {
         // Lookup the size the browser is displaying the canvas.
@@ -237,6 +276,14 @@ var LCTDataGrid = /** @class */ (function () {
         // ...then set the internal size to match
         this.TheCanvas.width = this.TheCanvas.offsetWidth;
         this.TheCanvas.height = this.TheCanvas.offsetHeight;
+    };
+    LCTDataGrid.prototype.SetGridOutline = function (flag) {
+        this.OutlineOn = flag;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetGridOutlineColor = function (col) {
+        this.OutlineColor = col;
+        this.FillCanvas();
     };
     LCTDataGrid.prototype.SetCellBackColor = function (col) {
         this.CellBackColor = col;
@@ -264,6 +311,14 @@ var LCTDataGrid = /** @class */ (function () {
     };
     LCTDataGrid.prototype.SetTitleFont = function (fnt) {
         this.TitleFont = fnt;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetTitleVisible = function (flag) {
+        this.TitleVisible = flag;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetHeaderVisible = function (flag) {
+        this.GridHeaderVisible = flag;
         this.FillCanvas();
     };
     LCTDataGrid.prototype.SetHeaderBackgroundColor = function (col) {
@@ -459,6 +514,11 @@ var LCTDataGrid = /** @class */ (function () {
                 ctx.fillText(it, lx + 3 - this.HorizontalOffset, ly + this.GridHeaderHeight - 5);
                 lx = lx + wid;
             }
+        }
+        // Outline?
+        if (this.OutlineOn) {
+            ctx.strokeStyle = this.OutlineColor;
+            ctx.strokeRect(0, 0, this.TheCanvas.width, this.TheCanvas.height);
         }
     };
     LCTDataGrid.prototype.ClearCanvas = function () {
