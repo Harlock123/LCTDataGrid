@@ -36,8 +36,8 @@
         </style>
             
 
-    <div id="LCTDataGrid" width="100%" height="200px">
-        <canvas id="LCTDataGridCanvas" class="LCTDataGrid" height="200"></canvas>
+    <div id="LCTDataGrid" style="height:70vh; width: 98vw" >
+        <canvas id="LCTDataGridCanvas" class="LCTDataGrid" ></canvas>
     </div>
 
     <script src="JS/jquery-1.10.2.min.js"></script>
@@ -49,6 +49,10 @@
         var DG = new LCTDataGrid(el);
 
         DG.FillCanvas();
+
+        el.addEventListener('CELLCLICKED', 
+            function (e) { 
+                alert("CellClicked " + DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + DG.CELLCLICKEDINFO.COLCLICKED); }, true);
 
     </script>
 

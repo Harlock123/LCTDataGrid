@@ -37,17 +37,20 @@ var LCTDataGrid = /** @class */ (function () {
         this.CellFont = "14pt Courier";
         this.CellWidths = [];
         this.CellHeights = [];
+        this.CELLCLICKEDINFO = null;
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
         this.ScrollButtonDown = false;
         this.LastMouseX = 0;
         this.LastMouseY = 0;
         this.colwidths = [];
+        // Event declarations for the grid
+        this.CellClickedEvent = document.createEvent("Event");
+        this.CellHoveredEvent = document.createEvent("Event");
         this.resizeCanvas = function (ev) {
             _this.resize;
             _this.FillCanvas();
         };
-        // Event Handlers
         this.HandleTouchStart = function (ev) {
             //this.Drawing = true;
             //this.lastx = ev.touches[0].clientX;
@@ -196,6 +199,33 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.LastMouseX = ev.offsetX;
                 _this.LastMouseY = ev.offsetY;
                 _this.ScrollButtonDown = true;
+                var realx = _this.LastMouseX + _this.HorizontalOffset;
+                var realy = _this.LastMouseY + _this.VerticleOffset - _this.TitleHeight - _this.GridHeaderHeight;
+                var calcx = 0;
+                var calcy = 0;
+                var therow = -1;
+                var thecol = -1;
+                for (var _row = 0; _row < _this.CellHeights.length; _row++) {
+                    calcy += _this.CellHeights[_row];
+                    if (calcy >= realy) {
+                        // we have our row
+                        therow = _row;
+                        break;
+                    }
+                }
+                for (var _col = 0; _col < _this.CellWidths.length; _col++) {
+                    calcx += _this.CellWidths[_col];
+                    if (calcx >= realx) {
+                        // we have our col
+                        thecol = _col;
+                        break;
+                    }
+                }
+                if (therow != -1 && thecol != -1) {
+                    // lets get the value 
+                    _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol);
+                    _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
+                }
             }
         };
         this.HandleMouseUp = function (ev) {
@@ -225,6 +255,10 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.addEventListener("touchstart", this.HandleTouchStart);
         this.TheCanvas.addEventListener("touchend", this.HandleTouchEnd);
         this.TheCanvas.addEventListener("touchmove", this.HandleTouchMove);
+        this.TheCanvas.addEventListener("contextmenu", this.HandleContextMenu);
+        this.TheCanvas.addEventListener("dblclick", this.HandleDoubleClick);
+        this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
+        this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
         this.ApplyCustomCSSAttributes();
         this.InitializeGridParameters();
     }
@@ -328,7 +362,7 @@ var LCTDataGrid = /** @class */ (function () {
         // Lookup the size the browser is displaying the canvas.
         // Make it visually fill the positioned parent
         this.TheCanvas.style.width = "100%";
-        // canvas.style.height = '100%';
+        this.TheCanvas.style.height = "100%";
         // ...then set the internal size to match
         this.TheCanvas.width = this.TheCanvas.offsetWidth;
         this.TheCanvas.height = this.TheCanvas.offsetHeight;
@@ -600,9 +634,27 @@ var LCTDataGrid = /** @class */ (function () {
         this.CalculateColumnWidths();
         this.FillCanvas();
     };
+    // Event Handlers
+    LCTDataGrid.prototype.HandleContextMenu = function (ev) {
+        // right mousebutton context menu
+        console.log("Context Menu");
+        console.log(ev);
+    };
+    LCTDataGrid.prototype.HandleDoubleClick = function (ev) {
+        console.log("Double Click");
+        console.log(ev);
+    };
     LCTDataGrid.prototype.GetImage = function () {
         return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';
     };
     return LCTDataGrid;
+}());
+var CELLCLICKEDMETADATA = /** @class */ (function () {
+    function CELLCLICKEDMETADATA(CC, RowC, ColC) {
+        this.CELLCLICKED = CC;
+        this.ROWCLICKED = RowC;
+        this.COLCLICKED = ColC;
+    }
+    return CELLCLICKEDMETADATA;
 }());
 //# sourceMappingURL=LCTDataGrid.js.map

@@ -46,6 +46,8 @@ class LCTDataGrid {
   CellWidths: number[] = [];
   CellHeights: number[] = [];
 
+  CELLCLICKEDINFO: CELLCLICKEDMETADATA = null;
+
   HorizontalOffset: number = 0;
   VerticleOffset: number = 0;
   ScrollButtonDown: boolean = false;
@@ -53,6 +55,10 @@ class LCTDataGrid {
   LastMouseY: number = 0;
 
   private colwidths: number[] = [];
+
+  // Event declarations for the grid
+  CellClickedEvent = document.createEvent("Event");
+  CellHoveredEvent = document.createEvent("Event");
 
   constructor(element: HTMLCanvasElement) {
     this.TheCanvas = element;
@@ -76,6 +82,14 @@ class LCTDataGrid {
     this.TheCanvas.addEventListener("touchend", this.HandleTouchEnd);
 
     this.TheCanvas.addEventListener("touchmove", this.HandleTouchMove);
+
+    this.TheCanvas.addEventListener("contextmenu", this.HandleContextMenu);
+
+    this.TheCanvas.addEventListener("dblclick", this.HandleDoubleClick);
+
+    this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
+
+    this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
 
     this.ApplyCustomCSSAttributes();
 
@@ -228,7 +242,7 @@ class LCTDataGrid {
     // Make it visually fill the positioned parent
 
     this.TheCanvas.style.width = "100%";
-    // canvas.style.height = '100%';
+    this.TheCanvas.style.height = "100%";
     // ...then set the internal size to match
     this.TheCanvas.width = this.TheCanvas.offsetWidth;
     this.TheCanvas.height = this.TheCanvas.offsetHeight;
@@ -615,6 +629,21 @@ class LCTDataGrid {
 
   // Event Handlers
 
+  HandleContextMenu(ev: Event)
+  {
+    // right mousebutton context menu
+
+    console.log("Context Menu");
+    console.log(ev);
+  }
+
+  HandleDoubleClick(ev: Event)
+  {
+    console.log("Double Click");
+    console.log(ev);
+  }
+
+
   HandleTouchStart = (ev: TouchEvent) => {
     //this.Drawing = true;
     //this.lastx = ev.touches[0].clientX;
@@ -833,8 +862,46 @@ class LCTDataGrid {
       this.LastMouseX = ev.offsetX;
       this.LastMouseY = ev.offsetY;
       this.ScrollButtonDown = true;
-    }
 
+      var realx = this.LastMouseX + this.HorizontalOffset;
+      var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
+      var calcx = 0;
+      var calcy = 0;
+      var therow =-1;
+      var thecol =-1;
+
+      for(var _row=0;_row < this.CellHeights.length;_row++)
+      {
+        calcy += this.CellHeights[_row];
+        if (calcy >= realy)
+        {
+          // we have our row
+          therow = _row;
+          break;
+        }
+      }
+
+      for(var _col=0;_col < this.CellWidths.length;_col++)
+      {
+        calcx += this.CellWidths[_col];
+        if(calcx >=realx)
+        {
+          // we have our col
+          thecol = _col;
+          break;
+        }
+      }
+
+      if (therow !=-1 && thecol != -1)
+      {
+        // lets get the value 
+
+        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
+
+        this.TheCanvas.dispatchEvent(this.CellClickedEvent);
+        
+      }
+    }
   };
 
   HandleMouseUp = (ev: MouseEvent) => {
@@ -858,5 +925,17 @@ class LCTDataGrid {
 
   GetImage() {
     return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';
+  }
+}
+
+class CELLCLICKEDMETADATA {
+  CELLCLICKED: string;
+  ROWCLICKED: number;
+  COLCLICKED: number;
+  
+  constructor(CC: string, RowC: number, ColC: number) {
+      this.CELLCLICKED = CC;
+      this.ROWCLICKED = RowC;
+      this.COLCLICKED = ColC;
   }
 }
