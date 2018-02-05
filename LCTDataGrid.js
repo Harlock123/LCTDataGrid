@@ -30,6 +30,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.GridCols = [];
         this.GridHeaderHeight = 0;
         this.CellBackColor = "#FFFFFF";
+        this.CellHighlightBackColor = "#AAAAAA";
         this.AlternateCellBackColor = "#30F030";
         this.AlternateRowColoring = false;
         this.CellForeColor = "#000000";
@@ -37,6 +38,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.CellFont = "14pt Courier";
         this.CellWidths = [];
         this.CellHeights = [];
+        this.HoverHighlight = true;
+        this.RowHoveredOver = -1;
         this.CELLCLICKEDINFO = null;
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
@@ -188,6 +191,50 @@ var LCTDataGrid = /** @class */ (function () {
                 }
                 _this.FillCanvas();
                 //this.HorizontalOffset += this.LastMouseX +
+            }
+            else {
+                // we are not scrolling the grid so lets see if we are highlighting the current row
+                if (true) {
+                    // We are highlighting the grids row being hovered over
+                    var realx = ev.offsetX + _this.HorizontalOffset;
+                    var realy = ev.offsetY + _this.VerticleOffset - _this.TitleHeight - _this.GridHeaderHeight;
+                    var calcx = 0;
+                    var calcy = 0;
+                    var therow = -1;
+                    var thecol = -1;
+                    for (var _row = 0; _row < _this.CellHeights.length; _row++) {
+                        calcy += _this.CellHeights[_row];
+                        if (calcy >= realy) {
+                            // we have our row
+                            therow = _row;
+                            break;
+                        }
+                    }
+                    for (var _col = 0; _col < _this.CellWidths.length; _col++) {
+                        calcx += _this.CellWidths[_col];
+                        if (calcx >= realx) {
+                            // we have our col
+                            thecol = _col;
+                            break;
+                        }
+                    }
+                    if (therow != -1 && thecol != -1) {
+                        // lets get the value 
+                        _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol);
+                        _this.TheCanvas.dispatchEvent(_this.CellHoveredEvent);
+                        if (_this.HoverHighlight) {
+                            _this.RowHoveredOver = therow;
+                        }
+                        else {
+                            _this.RowHoveredOver = -1;
+                        }
+                        _this.FillCanvas();
+                    }
+                    else {
+                        _this.RowHoveredOver = -1;
+                        _this.FillCanvas();
+                    }
+                }
             }
         };
         this.HandleMouseDown = function (ev) {
@@ -551,15 +598,30 @@ var LCTDataGrid = /** @class */ (function () {
                 if (this.AlternateRowColoring) {
                     if (_currow % 2 == 0) {
                         // Its Even
-                        ctx.fillStyle = this.CellBackColor;
+                        if (_currow == this.RowHoveredOver) {
+                            ctx.fillStyle = this.CellHighlightBackColor;
+                        }
+                        else {
+                            ctx.fillStyle = this.CellBackColor;
+                        }
                     }
                     else {
                         // its Odd
-                        ctx.fillStyle = this.AlternateCellBackColor;
+                        if (_currow == this.RowHoveredOver) {
+                            ctx.fillStyle = this.CellHighlightBackColor;
+                        }
+                        else {
+                            ctx.fillStyle = this.AlternateCellBackColor;
+                        }
                     }
                 }
                 else {
-                    ctx.fillStyle = this.CellBackColor;
+                    if (_currow == this.RowHoveredOver) {
+                        ctx.fillStyle = this.CellHighlightBackColor;
+                    }
+                    else {
+                        ctx.fillStyle = this.CellBackColor;
+                    }
                 }
                 ctx.fillRect(lx - this.HorizontalOffset, ly - this.VerticleOffset, this.CellWidths[_curcol], hei);
                 ctx.strokeStyle = this.CellOutlineColor;

@@ -38,6 +38,7 @@ class LCTDataGrid {
   GridHeaderHeight: number = 0;
 
   CellBackColor: string = "#FFFFFF";
+  CellHighlightBackColor: string = "#AAAAAA";
   AlternateCellBackColor: string = "#30F030";
   AlternateRowColoring: boolean = false;
   CellForeColor: string = "#000000";
@@ -45,6 +46,9 @@ class LCTDataGrid {
   CellFont: string = "14pt Courier";
   CellWidths: number[] = [];
   CellHeights: number[] = [];
+
+  HoverHighlight: boolean = true;
+  RowHoveredOver: number = -1;
 
   CELLCLICKEDINFO: CELLCLICKEDMETADATA = null;
 
@@ -510,18 +514,38 @@ class LCTDataGrid {
           if (_currow % 2 == 0)
           {
             // Its Even
-            ctx.fillStyle = this.CellBackColor;
-
+            if (_currow == this.RowHoveredOver)
+            {
+              ctx.fillStyle = this.CellHighlightBackColor;
+            }
+            else
+            {
+              ctx.fillStyle = this.CellBackColor;
+            }
           }
           else
           {
             // its Odd
-            ctx.fillStyle = this.AlternateCellBackColor;
+            if (_currow == this.RowHoveredOver)
+            {
+              ctx.fillStyle = this.CellHighlightBackColor;
+            }
+            else
+            {
+              ctx.fillStyle = this.AlternateCellBackColor;
+            }
           }
         }
         else
         {
-          ctx.fillStyle = this.CellBackColor;
+          if (_currow == this.RowHoveredOver)
+          {
+            ctx.fillStyle = this.CellHighlightBackColor;
+          }
+          else
+          {
+            ctx.fillStyle = this.CellBackColor;
+          }
         }
         ctx.fillRect(lx-this.HorizontalOffset, ly-this.VerticleOffset, this.CellWidths[_curcol], hei);
         ctx.strokeStyle = this.CellOutlineColor;
@@ -847,6 +871,72 @@ class LCTDataGrid {
 
       //this.HorizontalOffset += this.LastMouseX +
 
+    }
+    else
+    {
+      // we are not scrolling the grid so lets see if we are highlighting the current row
+      if (true) //(this.HoverHighlight)
+      {
+        // We are highlighting the grids row being hovered over
+
+        var realx = ev.offsetX + this.HorizontalOffset;
+        var realy = ev.offsetY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
+        var calcx = 0;
+        var calcy = 0;
+        var therow =-1;
+        var thecol =-1;
+
+        for(var _row=0;_row < this.CellHeights.length;_row++)
+      {
+        calcy += this.CellHeights[_row];
+        if (calcy >= realy)
+        {
+          // we have our row
+          therow = _row;
+          break;
+        }
+      }
+
+      for(var _col=0;_col < this.CellWidths.length;_col++)
+      {
+        calcx += this.CellWidths[_col];
+        if(calcx >=realx)
+        {
+          // we have our col
+          thecol = _col;
+          break;
+        }
+      }
+
+      if (therow !=-1 && thecol != -1)
+      {
+        // lets get the value 
+
+        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
+
+        this.TheCanvas.dispatchEvent(this.CellHoveredEvent);
+
+        if (this.HoverHighlight)
+        {
+          this.RowHoveredOver = therow;
+        }
+        else
+        {
+          this.RowHoveredOver = -1;
+        }
+
+        this.FillCanvas();
+        
+      }
+      else
+      {
+        this.RowHoveredOver = -1;
+        
+        this.FillCanvas();
+      }
+
+
+      }
     }
   };
 
