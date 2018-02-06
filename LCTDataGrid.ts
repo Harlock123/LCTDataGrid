@@ -239,6 +239,14 @@ class LCTDataGrid {
         this.GridHeaderVisible = false;
     }
 
+    theval = TheCSS.getPropertyValue("--HoverHighlight");
+
+    if (theval !== undefined && theval !== "") {
+      if (theval.toLowerCase()==="true")
+        this.HoverHighlight = true;
+      else
+        this.HoverHighlight = false;
+    }
   }
 
   resize() {
@@ -279,6 +287,12 @@ class LCTDataGrid {
 
   SetAlternateCellBackColor(col: string) {
     this.AlternateCellBackColor = col;
+    this.FillCanvas();
+  }
+
+  SetHoverHighlight(trigger: boolean)
+  {
+    this.HoverHighlight = trigger;
     this.FillCanvas();
   }
 
@@ -360,6 +374,7 @@ class LCTDataGrid {
     this.lasty = 0;
     this.HorizontalOffset = 0;
     this.VerticleOffset = 0;
+    this.RowHoveredOver = -1;
   }
 
   FillCanvas() {
@@ -887,43 +902,72 @@ class LCTDataGrid {
         var thecol =-1;
 
         for(var _row=0;_row < this.CellHeights.length;_row++)
-      {
-        calcy += this.CellHeights[_row];
-        if (calcy >= realy)
         {
-          // we have our row
-          therow = _row;
-          break;
+          calcy += this.CellHeights[_row];
+          if (calcy >= realy)
+          {
+            // we have our row
+            therow = _row;
+            break;
+          }
         }
-      }
 
-      for(var _col=0;_col < this.CellWidths.length;_col++)
-      {
-        calcx += this.CellWidths[_col];
-        if(calcx >=realx)
+        // special check to see if we are off the grid but on header opr title
+
+        if (this.TitleVisible && ev.offsetY <= this.TitleHeight)
         {
-          // we have our col
-          thecol = _col;
-          break;
-        }
-      }
-
-      if (therow !=-1 && thecol != -1)
-      {
-        // lets get the value 
-
-        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
-
-        this.TheCanvas.dispatchEvent(this.CellHoveredEvent);
-
-        if (this.HoverHighlight)
-        {
-          this.RowHoveredOver = therow;
+          therow =-1;
         }
         else
         {
-          this.RowHoveredOver = -1;
+          if (!this.TitleVisible && this.GridHeaderVisible && ev.offsetY <= this.GridHeaderHeight)
+          {
+            therow = -1;
+          }
+          else
+          {
+            if(this.TitleVisible && this.GridHeaderVisible && ev.offsetY <= this.TitleHeight + this.GridHeaderHeight)
+            {
+              therow =-1;
+            }
+          }
         }
+
+        //if (this.TitleVisible && ev.offsetY <= this.TitleHeight)
+        //{
+        //  this.RowHoveredOver = -1;
+        //
+        //  this.FillCanvas();
+        //}
+        
+
+        for(var _col=0;_col < this.CellWidths.length;_col++)
+        {
+          calcx += this.CellWidths[_col];
+          if(calcx >=realx)
+          {
+            // we have our col
+            thecol = _col;
+            break;
+          }
+        }
+
+        if (therow !=-1 && thecol != -1)
+        {
+          // lets get the value 
+
+          this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
+
+          this.TheCanvas.dispatchEvent(this.CellHoveredEvent);
+
+          if (this.HoverHighlight)
+          {
+            this.RowHoveredOver = therow;
+          }
+          else
+          {
+            this.RowHoveredOver = -1;
+          }
 
         this.FillCanvas();
         
@@ -1011,6 +1055,12 @@ class LCTDataGrid {
     this.LastMouseX = 0;
     this.LastMouseY = 0;
     this.ScrollButtonDown = false;
+
+    if (this.HoverHighlight)
+    {
+      this.RowHoveredOver = -1;
+      this.FillCanvas;
+    }
   }
 
   GetImage() {
