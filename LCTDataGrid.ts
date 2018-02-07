@@ -75,7 +75,7 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
 
-    this.TheCanvas.addEventListener("mouseout", this.HandleMouseOut);
+    this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
 
     this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
 
@@ -247,6 +247,15 @@ class LCTDataGrid {
       else
         this.HoverHighlight = false;
     }
+
+    theval = TheCSS.getPropertyValue("--CellHighlightBackColor");
+
+    if (theval !== undefined && theval !== "") {
+      this.CellHighlightBackColor = theval; 
+    }
+
+
+    //CellHighlightBackColor
   }
 
   resize() {
@@ -1059,7 +1068,7 @@ class LCTDataGrid {
     if (this.HoverHighlight)
     {
       this.RowHoveredOver = -1;
-      this.FillCanvas;
+      this.FillCanvas();
     }
   }
 

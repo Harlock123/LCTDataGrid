@@ -310,7 +310,7 @@ var LCTDataGrid = /** @class */ (function () {
             _this.ScrollButtonDown = false;
             if (_this.HoverHighlight) {
                 _this.RowHoveredOver = -1;
-                _this.FillCanvas;
+                _this.FillCanvas();
             }
         };
         this.TheCanvas = element;
@@ -320,7 +320,7 @@ var LCTDataGrid = /** @class */ (function () {
         // the window is resized.
         window.addEventListener("resize", this.resizeCanvas, false);
         this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
-        this.TheCanvas.addEventListener("mouseout", this.HandleMouseOut);
+        this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
         this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
         this.TheCanvas.addEventListener("mouseup", this.HandleMouseUp);
         this.TheCanvas.addEventListener("touchstart", this.HandleTouchStart);
@@ -435,6 +435,11 @@ var LCTDataGrid = /** @class */ (function () {
             else
                 this.HoverHighlight = false;
         }
+        theval = TheCSS.getPropertyValue("--CellHighlightBackColor");
+        if (theval !== undefined && theval !== "") {
+            this.CellHighlightBackColor = theval;
+        }
+        //CellHighlightBackColor
     };
     LCTDataGrid.prototype.resize = function () {
         // Lookup the size the browser is displaying the canvas.
