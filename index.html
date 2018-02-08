@@ -63,7 +63,27 @@
 
         el.addEventListener('CELLCLICKED', 
             function (e) { 
-                alert("CellClicked " + DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + DG.CELLCLICKEDINFO.COLCLICKED); }, true);
+                var v = "Cell Clicked \n" + 
+                    DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + 
+                    DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + 
+                    DG.CELLCLICKEDINFO.COLCLICKED;
+                
+                    var el = document.getElementById('MOUSECLICKAREA');
+
+                    el.innerHTML = v;
+                }, true);
+
+        el.addEventListener('CELLHOVERED', 
+            function (e) { 
+                var v = "Cell Hovered \n" + 
+                    DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + 
+                    DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + 
+                    DG.CELLCLICKEDINFO.COLCLICKED;
+                
+                    var el = document.getElementById('MOUSEHOVERAREA');
+
+                    el.innerHTML = v;
+                }, true);
 
     </script>
 
@@ -106,6 +126,11 @@
     <input type="button" 
     onclick="DG.PopulateFromJSONUrl('https://my-json-server.typicode.com/Harlock123/JSONData/db');" 
     id="btn9" value="Fetch Data From URL">
+
+    <br>
+    MouseClick Event Data:_____________________MouseHover Event Data<br>
+    <textarea id="MOUSECLICKAREA" rows=6 cols=40></textarea>
+    <textarea id="MOUSEHOVERAREA" rows=6 cols=40></textarea>
     <!--
 
     <input type="button" onclick="SP.SetBackgroundColor('#ff9999')" id="btn2" value="Red Background">
@@ -118,5 +143,12 @@
 
     <input type="button" onclick="document.write(SP.GetImage());" id="btnimag" value="Picture">
 -->
+
+<script>
+    
+
+
+
+</script>
 </body>
 </html>
