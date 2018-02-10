@@ -5,6 +5,11 @@ var LCTDataGrid = /** @class */ (function () {
         this.Drawing = false;
         this.HorizontalScrollBarVisible = false;
         this.VerticleScrollBarVisible = false;
+        this.SliderBackColor = "#FFFFFF";
+        this.SliderForeColor = "#3f3f3f";
+        this.SliderThickness = 10;
+        this.CalculatedGridHeightTotal = 0;
+        this.CalculatedGridWidthTotal = 0;
         this.lastx = -1;
         this.lasty = -1;
         this.linecolor = "#000000";
@@ -394,7 +399,7 @@ var LCTDataGrid = /** @class */ (function () {
         }
         theval = TheCSS.getPropertyValue("--OutlineOn");
         if (theval !== undefined && theval !== "") {
-            if (theval.toLowerCase() === "true")
+            if (theval.toLowerCase().trim() === "true")
                 this.OutlineOn = true;
             else
                 this.OutlineOn = false;
@@ -409,28 +414,28 @@ var LCTDataGrid = /** @class */ (function () {
         }
         theval = TheCSS.getPropertyValue("--AlternateRowColoring");
         if (theval !== undefined && theval !== "") {
-            if (theval.toLowerCase() === "true")
+            if (theval.toLowerCase().trim() === "true")
                 this.AlternateRowColoring = true;
             else
                 this.AlternateRowColoring = false;
         }
         theval = TheCSS.getPropertyValue("--TitleVisible");
         if (theval !== undefined && theval !== "") {
-            if (theval.toLowerCase() === "true")
+            if (theval.toLowerCase().trim() === "true")
                 this.TitleVisible = true;
             else
                 this.TitleVisible = false;
         }
         theval = TheCSS.getPropertyValue("--GridHeaderVisible");
         if (theval !== undefined && theval !== "") {
-            if (theval.toLowerCase() === "true")
+            if (theval.toLowerCase().trim() === "true")
                 this.GridHeaderVisible = true;
             else
                 this.GridHeaderVisible = false;
         }
         theval = TheCSS.getPropertyValue("--HoverHighlight");
         if (theval !== undefined && theval !== "") {
-            if (theval.toLowerCase() === "true")
+            if (theval.toLowerCase().trim() === "true")
                 this.HoverHighlight = true;
             else
                 this.HoverHighlight = false;
@@ -438,6 +443,18 @@ var LCTDataGrid = /** @class */ (function () {
         theval = TheCSS.getPropertyValue("--CellHighlightBackColor");
         if (theval !== undefined && theval !== "") {
             this.CellHighlightBackColor = theval;
+        }
+        theval = TheCSS.getPropertyValue("--SliderBackColor");
+        if (theval !== undefined && theval !== "") {
+            this.SliderBackColor = theval;
+        }
+        theval = TheCSS.getPropertyValue("--SliderForeColor");
+        if (theval !== undefined && theval !== "") {
+            this.SliderForeColor = theval;
+        }
+        theval = TheCSS.getPropertyValue("--SliderThickness");
+        if (theval !== undefined && theval !== "") {
+            this.SliderThickness = Number(theval);
         }
         //CellHighlightBackColor
     };
@@ -522,6 +539,18 @@ var LCTDataGrid = /** @class */ (function () {
         this.linecolor = col;
         this.FillCanvas();
     };
+    LCTDataGrid.prototype.SetSliderBackColor = function (col) {
+        this.SliderBackColor = col;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetSliderForeColor = function (col) {
+        this.SliderForeColor = col;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetSliderThickness = function (val) {
+        this.SliderThickness = val;
+        this.FillCanvas();
+    };
     LCTDataGrid.prototype.SetGridRowsJSON = function (TheRows) {
         this.GridRows = JSON.parse(TheRows);
         this.InitializeGridParameters();
@@ -536,6 +565,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
         this.RowHoveredOver = -1;
+        this.CalculatedGridHeightTotal = 0;
+        this.CalculatedGridWidthTotal = 0;
     };
     LCTDataGrid.prototype.FillCanvas = function () {
         this.resize();
@@ -553,6 +584,8 @@ var LCTDataGrid = /** @class */ (function () {
     LCTDataGrid.prototype.CalculateColumnWidths = function () {
         this.CellWidths = [];
         this.CellHeights = [];
+        this.CalculatedGridHeightTotal = 0;
+        this.CalculatedGridWidthTotal = 0;
         var ctx = this.TheCanvas.getContext("2d");
         ctx.font = this.GridHeaderFont;
         for (var _i = 0; _i < this.GridHeader.length; _i++) {
@@ -560,6 +593,7 @@ var LCTDataGrid = /** @class */ (function () {
             var it = this.GridHeader[_i];
             var wid = ctx.measureText(it).width;
             this.CellWidths.push(wid + 6);
+            //this.CalculatedGridWidthTotal += wid+6;
         }
         ctx.font = this.CellFont;
         var hei = 0;
@@ -597,6 +631,10 @@ var LCTDataGrid = /** @class */ (function () {
                 }
             }
             this.CellHeights.push((Cellheight + 6) * numlines);
+            this.CalculatedGridHeightTotal += ((Cellheight + 6) * numlines);
+        }
+        for (var ii = 0; ii < this.CellWidths.length; ii++) {
+            this.CalculatedGridWidthTotal += this.CellWidths[ii];
         }
     };
     LCTDataGrid.prototype.CaclulateTitleHeightAndHeaderHeight = function () {
@@ -712,6 +750,23 @@ var LCTDataGrid = /** @class */ (function () {
         if (this.OutlineOn) {
             ctx.strokeStyle = this.OutlineColor;
             ctx.strokeRect(0, 0, this.TheCanvas.width, this.TheCanvas.height);
+        }
+        // Here we want to see of the VIEW is smaller than the 
+        // content and if so we need to show some scrollbars
+        console.log("Canvas Width: " + this.TheCanvas.width);
+        console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+        if (this.TheCanvas.width < this.CalculatedGridWidthTotal) {
+            // we are narrower
+            console.log("Narrower");
+            // OK so lets Draw a slider along the bottom
+            ctx.fillStyle = this.SliderBackColor;
+            ctx.fillRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
+            ctx.strokeStyle = this.SliderForeColor;
+            ctx.strokeRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
+        }
+        if (this.TheCanvas.height < this.CalculatedGridHeightTotal) {
+            // we are shorter
+            console.log("Shorter");
         }
     };
     LCTDataGrid.prototype.ClearCanvas = function () {

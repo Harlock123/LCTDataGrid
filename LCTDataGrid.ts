@@ -6,6 +6,11 @@ class LCTDataGrid {
   Drawing: boolean = false;
   HorizontalScrollBarVisible: boolean = false;
   VerticleScrollBarVisible: boolean = false;
+  SliderBackColor: string = "#FFFFFF";
+  SliderForeColor: string = "#3f3f3f";
+  SliderThickness: number = 10;
+  CalculatedGridHeightTotal: number = 0;
+  CalculatedGridWidthTotal: number = 0;
 
   lastx: number = -1;
   lasty: number = -1;
@@ -194,7 +199,7 @@ class LCTDataGrid {
     theval = TheCSS.getPropertyValue("--OutlineOn");
 
     if (theval !== undefined && theval !== "") {
-      if (theval.toLowerCase()==="true")
+      if (theval.toLowerCase().trim()==="true")
         this.OutlineOn = true;
       else
         this.OutlineOn = false;
@@ -215,7 +220,7 @@ class LCTDataGrid {
     theval = TheCSS.getPropertyValue("--AlternateRowColoring");
 
     if (theval !== undefined && theval !== "") {
-      if (theval.toLowerCase()==="true")
+      if (theval.toLowerCase().trim()==="true")
         this.AlternateRowColoring = true;
       else
         this.AlternateRowColoring = false;
@@ -224,7 +229,7 @@ class LCTDataGrid {
     theval = TheCSS.getPropertyValue("--TitleVisible");
 
     if (theval !== undefined && theval !== "") {
-      if (theval.toLowerCase()==="true")
+      if (theval.toLowerCase().trim()==="true")
         this.TitleVisible = true;
       else
         this.TitleVisible = false;
@@ -233,7 +238,7 @@ class LCTDataGrid {
     theval = TheCSS.getPropertyValue("--GridHeaderVisible");
 
     if (theval !== undefined && theval !== "") {
-      if (theval.toLowerCase()==="true")
+      if (theval.toLowerCase().trim()==="true")
         this.GridHeaderVisible = true;
       else
         this.GridHeaderVisible = false;
@@ -242,7 +247,7 @@ class LCTDataGrid {
     theval = TheCSS.getPropertyValue("--HoverHighlight");
 
     if (theval !== undefined && theval !== "") {
-      if (theval.toLowerCase()==="true")
+      if (theval.toLowerCase().trim()==="true")
         this.HoverHighlight = true;
       else
         this.HoverHighlight = false;
@@ -252,6 +257,24 @@ class LCTDataGrid {
 
     if (theval !== undefined && theval !== "") {
       this.CellHighlightBackColor = theval; 
+    }
+
+    theval = TheCSS.getPropertyValue("--SliderBackColor");
+
+    if (theval !== undefined && theval !== "") {
+      this.SliderBackColor = theval; 
+    }
+
+    theval = TheCSS.getPropertyValue("--SliderForeColor");
+
+    if (theval !== undefined && theval !== "") {
+      this.SliderForeColor = theval; 
+    }
+
+    theval = TheCSS.getPropertyValue("--SliderThickness");
+
+    if (theval !== undefined && theval !== "") {
+      this.SliderThickness = Number(theval) ; 
     }
 
 
@@ -365,6 +388,21 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
+  SetSliderBackColor(col: string) {
+    this.SliderBackColor = col;
+    this.FillCanvas();
+  }
+
+  SetSliderForeColor(col: string) {
+    this.SliderForeColor = col;
+    this.FillCanvas();
+  }
+
+  SetSliderThickness(val: number) {
+    this.SliderThickness = val;
+    this.FillCanvas();
+  }
+
   SetGridRowsJSON(TheRows: string)
   {
     this.GridRows = JSON.parse(TheRows);
@@ -384,6 +422,8 @@ class LCTDataGrid {
     this.HorizontalOffset = 0;
     this.VerticleOffset = 0;
     this.RowHoveredOver = -1;
+    this.CalculatedGridHeightTotal = 0;
+    this.CalculatedGridWidthTotal = 0;
   }
 
   FillCanvas() {
@@ -405,6 +445,8 @@ class LCTDataGrid {
   {
     this.CellWidths = [];
     this.CellHeights = [];
+    this.CalculatedGridHeightTotal = 0;
+    this.CalculatedGridWidthTotal = 0;
 
     var ctx = this.TheCanvas.getContext("2d");
     ctx.font = this.GridHeaderFont;
@@ -417,6 +459,7 @@ class LCTDataGrid {
       var wid = ctx.measureText(it).width;
 
       this.CellWidths.push(wid+6);
+      //this.CalculatedGridWidthTotal += wid+6;
     }
 
     ctx.font = this.CellFont;
@@ -475,7 +518,14 @@ class LCTDataGrid {
         }
       }
       this.CellHeights.push((Cellheight+6) * numlines);
+      this.CalculatedGridHeightTotal += ((Cellheight+6) * numlines);
     }
+
+    for(var ii=0;ii<this.CellWidths.length;ii++)
+    {
+      this.CalculatedGridWidthTotal += this.CellWidths[ii];
+    }
+
   }
 
   private CaclulateTitleHeightAndHeaderHeight()
@@ -640,6 +690,34 @@ class LCTDataGrid {
       ctx.strokeStyle = this.OutlineColor;
       ctx.strokeRect(0,0,this.TheCanvas.width,this.TheCanvas.height);
     }
+
+    // Here we want to see of the VIEW is smaller than the 
+    // content and if so we need to show some scrollbars
+
+    console.log("Canvas Width: " + this.TheCanvas.width);
+    console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+
+    if (<number>this.TheCanvas.width < this.CalculatedGridWidthTotal)
+    {
+      // we are narrower
+      console.log("Narrower");
+      // OK so lets Draw a slider along the bottom
+
+      ctx.fillStyle = this.SliderBackColor;
+      ctx.fillRect(0,this.TheCanvas.height-this.SliderThickness,this.TheCanvas.width,this.SliderThickness);
+
+      ctx.strokeStyle = this.SliderForeColor;
+      ctx.strokeRect(0,this.TheCanvas.height-this.SliderThickness,this.TheCanvas.width,this.SliderThickness);
+      
+    }
+
+    if (<number>this.TheCanvas.height < this.CalculatedGridHeightTotal)
+    {
+      // we are shorter
+      console.log("Shorter");
+    }
+
+
   }
 
   private ClearCanvas() {
