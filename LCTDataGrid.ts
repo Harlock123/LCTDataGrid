@@ -59,6 +59,8 @@ class LCTDataGrid {
 
   HorizontalOffset: number = 0;
   VerticleOffset: number = 0;
+  MaximumHorizontalOffset: number = 0;
+  MaximumVerticleOffset: number = 0;
   ScrollButtonDown: boolean = false;
   LastMouseX: number = 0;
   LastMouseY: number = 0;
@@ -526,6 +528,18 @@ class LCTDataGrid {
       this.CalculatedGridWidthTotal += this.CellWidths[ii];
     }
 
+    this.MaximumHorizontalOffset = (this.CalculatedGridWidthTotal - <number>this.TheCanvas.width)
+
+    if (this.HorizontalScrollBarVisible)
+    {
+      this.MaximumHorizontalOffset += this.SliderThickness;
+    }
+
+    if(this.MaximumHorizontalOffset < 0)
+    {
+      this.MaximumHorizontalOffset = 0;
+    }
+
   }
 
   private CaclulateTitleHeightAndHeaderHeight()
@@ -696,6 +710,8 @@ class LCTDataGrid {
 
     console.log("Canvas Width: " + this.TheCanvas.width);
     console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+    console.log("HorizontalOffset: " + this.HorizontalOffset);
+
 
     if (<number>this.TheCanvas.width < this.CalculatedGridWidthTotal)
     {
@@ -707,8 +723,21 @@ class LCTDataGrid {
       ctx.fillRect(0,this.TheCanvas.height-this.SliderThickness,this.TheCanvas.width,this.SliderThickness);
 
       ctx.strokeStyle = this.SliderForeColor;
+      ctx.fillStyle = this.SliderForeColor;
       ctx.strokeRect(0,this.TheCanvas.height-this.SliderThickness,this.TheCanvas.width,this.SliderThickness);
+
+      // calculate the position and dimension of the scroll bar button itself
+
+      var hwidth = (<number>this.TheCanvas.width * (<number>this.TheCanvas.width / this.CalculatedGridWidthTotal));
+
+      ctx.fillRect(0 + this.HorizontalOffset,this.TheCanvas.height-this.SliderThickness + 2 ,hwidth,this.SliderThickness-4);
+
+      this.HorizontalScrollBarVisible = true;
       
+    }
+    else
+    {
+      this.HorizontalScrollBarVisible = false;
     }
 
     if (<number>this.TheCanvas.height < this.CalculatedGridHeightTotal)
@@ -828,6 +857,11 @@ class LCTDataGrid {
         this.LastMouseX = ev.touches[0].clientX
 
         //this.FillCanvas();
+
+        if (this.HorizontalOffset > this.MaximumHorizontalOffset)
+        {
+          this.HorizontalOffset = this.MaximumHorizontalOffset;
+        }
         
       }
       else
@@ -840,6 +874,11 @@ class LCTDataGrid {
           if (this.HorizontalOffset<0)
           {
             this.HorizontalOffset = 0;
+          }
+
+          if (this.HorizontalOffset > this.MaximumHorizontalOffset)
+          {
+            this.HorizontalOffset = this.MaximumHorizontalOffset;
           }
 
           this.LastMouseX = ev.touches[0].clientX
@@ -916,6 +955,11 @@ class LCTDataGrid {
         //}
         this.LastMouseX = ev.offsetX
 
+        if (this.HorizontalOffset > this.MaximumHorizontalOffset)
+        {
+          this.HorizontalOffset = this.MaximumHorizontalOffset;
+        }
+
         //this.FillCanvas();
         
       }
@@ -929,6 +973,11 @@ class LCTDataGrid {
           if (this.HorizontalOffset<0)
           {
             this.HorizontalOffset = 0;
+          }
+
+          if (this.HorizontalOffset > this.MaximumHorizontalOffset)
+          {
+            this.HorizontalOffset = this.MaximumHorizontalOffset;
           }
 
           this.LastMouseX = ev.offsetX

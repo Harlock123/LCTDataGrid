@@ -48,6 +48,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.CELLCLICKEDINFO = null;
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
+        this.MaximumHorizontalOffset = 0;
+        this.MaximumVerticleOffset = 0;
         this.ScrollButtonDown = false;
         this.LastMouseX = 0;
         this.LastMouseY = 0;
@@ -101,6 +103,9 @@ var LCTDataGrid = /** @class */ (function () {
                     //}
                     _this.LastMouseX = ev.touches[0].clientX;
                     //this.FillCanvas();
+                    if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
+                        _this.HorizontalOffset = _this.MaximumHorizontalOffset;
+                    }
                 }
                 else {
                     if (_this.LastMouseX > ev.touches[0].clientX) {
@@ -108,6 +113,9 @@ var LCTDataGrid = /** @class */ (function () {
                         _this.HorizontalOffset -= _this.LastMouseX - ev.touches[0].clientX;
                         if (_this.HorizontalOffset < 0) {
                             _this.HorizontalOffset = 0;
+                        }
+                        if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
+                            _this.HorizontalOffset = _this.MaximumHorizontalOffset;
                         }
                         _this.LastMouseX = ev.touches[0].clientX;
                         //this.FillCanvas();
@@ -160,6 +168,9 @@ var LCTDataGrid = /** @class */ (function () {
                     //this.HorizontalOffset = 0;
                     //}
                     _this.LastMouseX = ev.offsetX;
+                    if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
+                        _this.HorizontalOffset = _this.MaximumHorizontalOffset;
+                    }
                     //this.FillCanvas();
                 }
                 else {
@@ -168,6 +179,9 @@ var LCTDataGrid = /** @class */ (function () {
                         _this.HorizontalOffset -= _this.LastMouseX - ev.offsetX;
                         if (_this.HorizontalOffset < 0) {
                             _this.HorizontalOffset = 0;
+                        }
+                        if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
+                            _this.HorizontalOffset = _this.MaximumHorizontalOffset;
                         }
                         _this.LastMouseX = ev.offsetX;
                         //this.FillCanvas();
@@ -636,6 +650,13 @@ var LCTDataGrid = /** @class */ (function () {
         for (var ii = 0; ii < this.CellWidths.length; ii++) {
             this.CalculatedGridWidthTotal += this.CellWidths[ii];
         }
+        this.MaximumHorizontalOffset = (this.CalculatedGridWidthTotal - this.TheCanvas.width);
+        if (this.HorizontalScrollBarVisible) {
+            this.MaximumHorizontalOffset += this.SliderThickness;
+        }
+        if (this.MaximumHorizontalOffset < 0) {
+            this.MaximumHorizontalOffset = 0;
+        }
     };
     LCTDataGrid.prototype.CaclulateTitleHeightAndHeaderHeight = function () {
         var ctx = this.TheCanvas.getContext("2d");
@@ -755,6 +776,7 @@ var LCTDataGrid = /** @class */ (function () {
         // content and if so we need to show some scrollbars
         console.log("Canvas Width: " + this.TheCanvas.width);
         console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+        console.log("HorizontalOffset: " + this.HorizontalOffset);
         if (this.TheCanvas.width < this.CalculatedGridWidthTotal) {
             // we are narrower
             console.log("Narrower");
@@ -762,7 +784,15 @@ var LCTDataGrid = /** @class */ (function () {
             ctx.fillStyle = this.SliderBackColor;
             ctx.fillRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
             ctx.strokeStyle = this.SliderForeColor;
+            ctx.fillStyle = this.SliderForeColor;
             ctx.strokeRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
+            // calculate the position and dimension of the scroll bar button itself
+            var hwidth = (this.TheCanvas.width * (this.TheCanvas.width / this.CalculatedGridWidthTotal));
+            ctx.fillRect(0 + this.HorizontalOffset, this.TheCanvas.height - this.SliderThickness + 2, hwidth, this.SliderThickness - 4);
+            this.HorizontalScrollBarVisible = true;
+        }
+        else {
+            this.HorizontalScrollBarVisible = false;
         }
         if (this.TheCanvas.height < this.CalculatedGridHeightTotal) {
             // we are shorter
