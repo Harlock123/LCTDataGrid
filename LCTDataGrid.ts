@@ -853,6 +853,9 @@ class LCTDataGrid {
       this.LastMouseX = ev.touches[0].clientX;
       this.LastMouseY = ev.touches[0].clientY;
       this.ScrollButtonDown = true;
+
+      this.HandleATouch_or_Mouse(ev.touches[0].clientX, ev.touches[0].clientY);
+
     }
 
     ev.preventDefault(); // Eat the touch if its on the canvas
@@ -1184,6 +1187,62 @@ class LCTDataGrid {
     }
   };
 
+  HandleATouch_or_Mouse(offsetx: number, offsety: number)
+  {
+      var realx = this.LastMouseX + this.HorizontalOffset;
+      var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
+      var calcx = 0;
+      var calcy = 0;
+      var therow =-1;
+      var thecol =-1;
+
+      for(var _row=0;_row < this.CellHeights.length;_row++)
+      {
+        calcy += this.CellHeights[_row];
+        if (calcy >= realy)
+        {
+          // we have our row
+          therow = _row;
+          break;
+        }
+      }
+
+      for(var _col=0;_col < this.CellWidths.length;_col++)
+      {
+        calcx += this.CellWidths[_col];
+        if(calcx >=realx)
+        {
+          // we have our col
+          thecol = _col;
+          break;
+        }
+      }
+
+      // Are we over one of the Scroll Bars
+
+      // 
+
+      if (this.HorizontalScrollBarVisible && (offsety > this.TheCanvas.height-this.SliderThickness))
+      {
+        therow = -1;
+      }
+
+      if (this.VerticleScrollBarVisible && (offsetx > this.TheCanvas.width - this.SliderThickness))
+      {
+        thecol = -1;
+      }
+
+      if (therow !=-1 && thecol != -1)
+      {
+        // lets get the value 
+
+        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
+
+        this.TheCanvas.dispatchEvent(this.CellClickedEvent);
+        
+      }
+  }
+
   HandleMouseDown = (ev: MouseEvent) => {
     //this.Drawing = true;
     //this.lastx = ev.offsetX;
@@ -1197,7 +1256,9 @@ class LCTDataGrid {
       this.LastMouseY = ev.offsetY;
       this.ScrollButtonDown = true;
 
-      var realx = this.LastMouseX + this.HorizontalOffset;
+      this.HandleATouch_or_Mouse(ev.offsetX, ev.offsetY);
+
+/*       var realx = this.LastMouseX + this.HorizontalOffset;
       var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
       var calcx = 0;
       var calcy = 0;
@@ -1248,7 +1309,7 @@ class LCTDataGrid {
 
         this.TheCanvas.dispatchEvent(this.CellClickedEvent);
         
-      }
+      } */
     }
   };
 
