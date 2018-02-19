@@ -6,6 +6,7 @@ class LCTDataGrid {
   Drawing: boolean = false;
   HorizontalScrollBarVisible: boolean = false;
   VerticleScrollBarVisible: boolean = false;
+  OverScrollBars: boolean = false;
   SliderBackColor: string = "#FFFFFF";
   SliderForeColor: string = "#3f3f3f";
   SliderThickness: number = 10;
@@ -292,10 +293,16 @@ class LCTDataGrid {
     // ...then set the internal size to match
     this.TheCanvas.width = this.TheCanvas.offsetWidth;
     this.TheCanvas.height = this.TheCanvas.offsetHeight;
+
+    this.ClearCanvas();
+    this.RedrawCanvas();
+
+    //this.HorizontalOffset = 0;
+    //this.VerticleOffset = 0;
   }
 
   resizeCanvas = (ev: UIEvent) => {
-    this.resize;
+    //this.resize();
     this.FillCanvas();
   };
 
@@ -426,6 +433,9 @@ class LCTDataGrid {
     this.RowHoveredOver = -1;
     this.CalculatedGridHeightTotal = 0;
     this.CalculatedGridWidthTotal = 0;
+    this.HorizontalScrollBarVisible = false;
+    this.VerticleScrollBarVisible = false;
+    this.OverScrollBars = false;
   }
 
   FillCanvas() {
@@ -729,15 +739,15 @@ class LCTDataGrid {
     // Here we want to see of the VIEW is smaller than the 
     // content and if so we need to show some scrollbars
 
-    console.log("Canvas Width: " + this.TheCanvas.width);
-    console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
-    console.log("HorizontalOffset: " + this.HorizontalOffset);
+    //console.log("Canvas Width: " + this.TheCanvas.width);
+    //console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+    //console.log("HorizontalOffset: " + this.HorizontalOffset);
 
 
     if (<number>this.TheCanvas.width < this.CalculatedGridWidthTotal)
     {
       // we are narrower
-      console.log("Narrower");
+      //console.log("Narrower");
       // OK so lets Draw a slider along the bottom
 
       ctx.fillStyle = this.SliderBackColor;
@@ -764,7 +774,7 @@ class LCTDataGrid {
     if (<number>this.TheCanvas.height < this.CalculatedGridHeightTotal)
     {
       // we are shorter
-      console.log("Shorter");
+      //console.log("Shorter");
 
       ctx.fillStyle = this.SliderBackColor;
       ctx.fillRect(this.TheCanvas.width - this.SliderThickness,0,this.SliderThickness,this.TheCanvas.height);
@@ -832,12 +842,16 @@ class LCTDataGrid {
 
     console.log("Context Menu");
     console.log(ev);
+
+    this.FillCanvas();
   }
 
   HandleDoubleClick(ev: Event)
   {
     console.log("Double Click");
     console.log(ev);
+
+    this.FillCanvas();
   }
 
 
@@ -858,6 +872,8 @@ class LCTDataGrid {
 
     }
 
+    this.FillCanvas();
+
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
 
@@ -869,6 +885,8 @@ class LCTDataGrid {
     this.LastMouseX = 0;
     this.LastMouseY = 0;
     this.ScrollButtonDown = false;
+
+    this.FillCanvas();
 
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
@@ -997,7 +1015,7 @@ class LCTDataGrid {
 
     //console.log(ev.offsetX);
 
-    if (this.ScrollButtonDown)
+    if (this.ScrollButtonDown && this.OverScrollBars)
     {
       // we are scrolling
       if (this.LastMouseX < ev.offsetX)
@@ -1222,14 +1240,19 @@ class LCTDataGrid {
 
       // 
 
+      this.OverScrollBars = false;
+
       if (this.HorizontalScrollBarVisible && (offsety > this.TheCanvas.height-this.SliderThickness))
       {
         therow = -1;
+        this.OverScrollBars = true;
+
       }
 
       if (this.VerticleScrollBarVisible && (offsetx > this.TheCanvas.width - this.SliderThickness))
       {
         thecol = -1;
+        this.OverScrollBars = true;
       }
 
       if (therow !=-1 && thecol != -1)
@@ -1311,6 +1334,8 @@ class LCTDataGrid {
         
       } */
     }
+
+    this.FillCanvas();
   };
 
   HandleMouseUp = (ev: MouseEvent) => {
@@ -1320,6 +1345,9 @@ class LCTDataGrid {
     this.LastMouseX = 0;
     this.LastMouseY = 0;
     this.ScrollButtonDown = false;
+    this.OverScrollBars = false;
+
+    this.FillCanvas();
 
   };
 
@@ -1330,6 +1358,7 @@ class LCTDataGrid {
     this.LastMouseX = 0;
     this.LastMouseY = 0;
     this.ScrollButtonDown = false;
+    this.OverScrollBars = false;
 
     if (this.HoverHighlight)
     {
