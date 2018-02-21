@@ -81,6 +81,14 @@ class LCTDataGrid {
     // the window is resized.
     window.addEventListener("resize", this.resizeCanvas, false);
 
+    // for everybody else
+    this.TheCanvas.addEventListener('mousewheel', this.mouseWheelEvent);
+
+    // For Firefox
+    this.TheCanvas.addEventListener('DOMMouseScroll', this.mouseWheelEvent);
+    
+    // other events
+
     this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
 
     this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
@@ -1308,6 +1316,49 @@ class LCTDataGrid {
       this.FillCanvas();
     }
   }
+
+  mouseWheelEvent = (e: MouseWheelEvent) => {
+    var delta = e.wheelDelta ? e.wheelDelta : -e.detail;
+
+    if (delta > 0)
+        delta = 7;
+    else
+        delta = -7;
+
+    if (this.HorizontalScrollBarVisible && (e.offsetY > (this.TheCanvas.height - (this.SliderThickness * 2)))) 
+    {
+      this.HorizontalOffset += delta;
+      if (this.HorizontalOffset < 0){
+        this.HorizontalOffset = 0;
+      }
+
+      if (this.HorizontalOffset > this.MaximumHorizontalOffset){
+        this.HorizontalOffset = this.MaximumHorizontalOffset;
+      }
+
+    }
+
+    if (this.VerticleScrollBarVisible && (e.offsetX > (this.TheCanvas.width - (this.SliderThickness * 2)))) 
+    {
+      this.VerticleOffset += delta;
+      if (this.VerticleOffset < 0){
+        this.VerticleOffset = 0;
+      }
+
+      if (this.VerticleOffset > this.MaximumVerticleOffset){
+        this.VerticleOffset = this.MaximumVerticleOffset;
+      }
+
+    }
+
+    this.FillCanvas();
+
+    e.preventDefault();
+
+
+    return false; // eat the mousewheel
+
+}
 
   GetImage() {
     return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';

@@ -326,12 +326,45 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.FillCanvas();
             }
         };
+        this.mouseWheelEvent = function (e) {
+            var delta = e.wheelDelta ? e.wheelDelta : -e.detail;
+            if (delta > 0)
+                delta = 7;
+            else
+                delta = -7;
+            if (_this.HorizontalScrollBarVisible && (e.offsetY > (_this.TheCanvas.height - (_this.SliderThickness * 2)))) {
+                _this.HorizontalOffset += delta;
+                if (_this.HorizontalOffset < 0) {
+                    _this.HorizontalOffset = 0;
+                }
+                if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
+                    _this.HorizontalOffset = _this.MaximumHorizontalOffset;
+                }
+            }
+            if (_this.VerticleScrollBarVisible && (e.offsetX > (_this.TheCanvas.width - (_this.SliderThickness * 2)))) {
+                _this.VerticleOffset += delta;
+                if (_this.VerticleOffset < 0) {
+                    _this.VerticleOffset = 0;
+                }
+                if (_this.VerticleOffset > _this.MaximumVerticleOffset) {
+                    _this.VerticleOffset = _this.MaximumVerticleOffset;
+                }
+            }
+            _this.FillCanvas();
+            e.preventDefault();
+            return false; // eat the mousewheel
+        };
         this.TheCanvas = element;
         //this.TheDiv = container;
         // Register an event listener to
         // call the resizeCanvas() function each time
         // the window is resized.
         window.addEventListener("resize", this.resizeCanvas, false);
+        // for everybody else
+        this.TheCanvas.addEventListener('mousewheel', this.mouseWheelEvent);
+        // For Firefox
+        this.TheCanvas.addEventListener('DOMMouseScroll', this.mouseWheelEvent);
+        // other events
         this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
         this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
         this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
