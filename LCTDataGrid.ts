@@ -291,8 +291,8 @@ class LCTDataGrid {
     this.TheCanvas.style.width = "100%";
     this.TheCanvas.style.height = "100%";
     // ...then set the internal size to match
-    this.TheCanvas.width = this.TheCanvas.offsetWidth;
-    this.TheCanvas.height = this.TheCanvas.offsetHeight;
+    this.TheCanvas.width = this.TheCanvas.clientWidth;
+    this.TheCanvas.height = this.TheCanvas.clientHeight;
 
     this.ClearCanvas();
     this.RedrawCanvas();
@@ -331,8 +331,7 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-  SetHoverHighlight(trigger: boolean)
-  {
+  SetHoverHighlight(trigger: boolean) {
     this.HoverHighlight = trigger;
     this.FillCanvas();
   }
@@ -412,8 +411,7 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-  SetGridRowsJSON(TheRows: string)
-  {
+  SetGridRowsJSON(TheRows: string) {
     this.GridRows = JSON.parse(TheRows);
     
     this.InitializeGridParameters();
@@ -453,8 +451,7 @@ class LCTDataGrid {
     }
   }
 
-  private CalculateColumnWidths()
-  {
+  private CalculateColumnWidths() {
     this.CellWidths = [];
     this.CellHeights = [];
     this.CalculatedGridHeightTotal = 0;
@@ -573,8 +570,7 @@ class LCTDataGrid {
 
   }
 
-  private CaclulateTitleHeightAndHeaderHeight()
-  {
+  private CaclulateTitleHeightAndHeaderHeight() {
     var ctx = this.TheCanvas.getContext("2d");
     if (this.TitleVisible)
     {
@@ -769,6 +765,7 @@ class LCTDataGrid {
     else
     {
       this.HorizontalScrollBarVisible = false;
+      this.HorizontalOffset = 0;
     }
 
     if (<number>this.TheCanvas.height < this.CalculatedGridHeightTotal)
@@ -796,6 +793,7 @@ class LCTDataGrid {
     else
     {
       this.VerticleScrollBarVisible = false;
+      this.VerticleOffset = 0;
     }
 
 
@@ -812,8 +810,7 @@ class LCTDataGrid {
 
   // URL Populate Methods
 
-  PopulateFromJSONUrl(DukeOfURL: string)
-  {
+  PopulateFromJSONUrl(DukeOfURL: string) {
 
     var Self = this;
 
@@ -836,8 +833,7 @@ class LCTDataGrid {
 
   // Event Handlers
 
-  HandleContextMenu(ev: Event)
-  {
+  HandleContextMenu(ev: Event) {
     // right mousebutton context menu
 
     console.log("Context Menu");
@@ -846,8 +842,7 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-  HandleDoubleClick(ev: Event)
-  {
+  HandleDoubleClick(ev: Event) {
     console.log("Double Click");
     console.log(ev);
 
@@ -1205,8 +1200,7 @@ class LCTDataGrid {
     }
   };
 
-  HandleATouch_or_Mouse(offsetx: number, offsety: number)
-  {
+  HandleATouch_or_Mouse(offsetx: number, offsety: number) {
       var realx = this.LastMouseX + this.HorizontalOffset;
       var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
       var calcx = 0;
@@ -1281,58 +1275,6 @@ class LCTDataGrid {
 
       this.HandleATouch_or_Mouse(ev.offsetX, ev.offsetY);
 
-/*       var realx = this.LastMouseX + this.HorizontalOffset;
-      var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
-      var calcx = 0;
-      var calcy = 0;
-      var therow =-1;
-      var thecol =-1;
-
-      for(var _row=0;_row < this.CellHeights.length;_row++)
-      {
-        calcy += this.CellHeights[_row];
-        if (calcy >= realy)
-        {
-          // we have our row
-          therow = _row;
-          break;
-        }
-      }
-
-      for(var _col=0;_col < this.CellWidths.length;_col++)
-      {
-        calcx += this.CellWidths[_col];
-        if(calcx >=realx)
-        {
-          // we have our col
-          thecol = _col;
-          break;
-        }
-      }
-
-      // Are we over one of the Scroll Bars
-
-      // 
-
-      if (this.HorizontalScrollBarVisible && (ev.offsetY > this.TheCanvas.height-this.SliderThickness))
-      {
-        therow = -1;
-      }
-
-      if (this.VerticleScrollBarVisible && (ev.offsetX > this.TheCanvas.width - this.SliderThickness))
-      {
-        thecol = -1;
-      }
-
-      if (therow !=-1 && thecol != -1)
-      {
-        // lets get the value 
-
-        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
-
-        this.TheCanvas.dispatchEvent(this.CellClickedEvent);
-        
-      } */
     }
 
     this.FillCanvas();

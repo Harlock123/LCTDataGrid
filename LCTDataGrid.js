@@ -302,58 +302,6 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.LastMouseY = ev.offsetY;
                 _this.ScrollButtonDown = true;
                 _this.HandleATouch_or_Mouse(ev.offsetX, ev.offsetY);
-                /*       var realx = this.LastMouseX + this.HorizontalOffset;
-                      var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
-                      var calcx = 0;
-                      var calcy = 0;
-                      var therow =-1;
-                      var thecol =-1;
-                
-                      for(var _row=0;_row < this.CellHeights.length;_row++)
-                      {
-                        calcy += this.CellHeights[_row];
-                        if (calcy >= realy)
-                        {
-                          // we have our row
-                          therow = _row;
-                          break;
-                        }
-                      }
-                
-                      for(var _col=0;_col < this.CellWidths.length;_col++)
-                      {
-                        calcx += this.CellWidths[_col];
-                        if(calcx >=realx)
-                        {
-                          // we have our col
-                          thecol = _col;
-                          break;
-                        }
-                      }
-                
-                      // Are we over one of the Scroll Bars
-                
-                      //
-                
-                      if (this.HorizontalScrollBarVisible && (ev.offsetY > this.TheCanvas.height-this.SliderThickness))
-                      {
-                        therow = -1;
-                      }
-                
-                      if (this.VerticleScrollBarVisible && (ev.offsetX > this.TheCanvas.width - this.SliderThickness))
-                      {
-                        thecol = -1;
-                      }
-                
-                      if (therow !=-1 && thecol != -1)
-                      {
-                        // lets get the value
-                
-                        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
-                
-                        this.TheCanvas.dispatchEvent(this.CellClickedEvent);
-                        
-                      } */
             }
             _this.FillCanvas();
         };
@@ -524,8 +472,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.style.width = "100%";
         this.TheCanvas.style.height = "100%";
         // ...then set the internal size to match
-        this.TheCanvas.width = this.TheCanvas.offsetWidth;
-        this.TheCanvas.height = this.TheCanvas.offsetHeight;
+        this.TheCanvas.width = this.TheCanvas.clientWidth;
+        this.TheCanvas.height = this.TheCanvas.clientHeight;
         this.ClearCanvas();
         this.RedrawCanvas();
         //this.HorizontalOffset = 0;
@@ -859,6 +807,7 @@ var LCTDataGrid = /** @class */ (function () {
         }
         else {
             this.HorizontalScrollBarVisible = false;
+            this.HorizontalOffset = 0;
         }
         if (this.TheCanvas.height < this.CalculatedGridHeightTotal) {
             // we are shorter
@@ -876,6 +825,7 @@ var LCTDataGrid = /** @class */ (function () {
         }
         else {
             this.VerticleScrollBarVisible = false;
+            this.VerticleOffset = 0;
         }
     };
     LCTDataGrid.prototype.ClearCanvas = function () {
