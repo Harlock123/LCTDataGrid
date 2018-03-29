@@ -1,0 +1,11 @@
+{
+    "Header": ["CM NAME","CM REGION","CM LOAD","CM LOAD SCORE","SCORE AVG",
+               "LASTACTIVE","NEXT DUE"],
+    "Data": [["Susan Quimby","REGION 1","35","76","~2","Last Tuesday","Today"],
+    ["William Taft","REGION 1a","40","80","~2","Today","Today"],
+    ["Delta Dawn","REGION 2","35","76","~2","Last Tuesday","Today"],
+    ["Richard Garis","REGION 3","101","105","~1","Last Tuesday","Today"],
+    ["Mary Tuft","REGION 2","35","70","2","Last Monday","Today"]
+            
+    ]
+}

@@ -5,7 +5,6 @@ var LCTDataGrid = /** @class */ (function () {
         this.Drawing = false;
         this.HorizontalScrollBarVisible = false;
         this.VerticleScrollBarVisible = false;
-        this.OverScrollBars = false;
         this.SliderBackColor = "#FFFFFF";
         this.SliderForeColor = "#3f3f3f";
         this.SliderThickness = 10;
@@ -59,7 +58,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.CellClickedEvent = document.createEvent("Event");
         this.CellHoveredEvent = document.createEvent("Event");
         this.resizeCanvas = function (ev) {
-            //this.resize();
+            _this.resize;
             _this.FillCanvas();
         };
         this.HandleTouchStart = function (ev) {
@@ -71,9 +70,7 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.LastMouseX = ev.touches[0].clientX;
                 _this.LastMouseY = ev.touches[0].clientY;
                 _this.ScrollButtonDown = true;
-                _this.HandleATouch_or_Mouse(ev.touches[0].clientX, ev.touches[0].clientY);
             }
-            _this.FillCanvas();
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
         this.HandleTouchEnd = function (ev) {
@@ -83,7 +80,6 @@ var LCTDataGrid = /** @class */ (function () {
             _this.LastMouseX = 0;
             _this.LastMouseY = 0;
             _this.ScrollButtonDown = false;
-            _this.FillCanvas();
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
         this.HandleTouchMove = function (ev) {
@@ -168,7 +164,7 @@ var LCTDataGrid = /** @class */ (function () {
             //this.lasty = ev.offsetY;
             //}
             //console.log(ev.offsetX);
-            if (_this.ScrollButtonDown && _this.OverScrollBars) {
+            if (_this.ScrollButtonDown) {
                 // we are scrolling
                 if (_this.LastMouseX < ev.offsetX) {
                     // moving left to right
@@ -301,9 +297,42 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.LastMouseX = ev.offsetX;
                 _this.LastMouseY = ev.offsetY;
                 _this.ScrollButtonDown = true;
-                _this.HandleATouch_or_Mouse(ev.offsetX, ev.offsetY);
+                var realx = _this.LastMouseX + _this.HorizontalOffset;
+                var realy = _this.LastMouseY + _this.VerticleOffset - _this.TitleHeight - _this.GridHeaderHeight;
+                var calcx = 0;
+                var calcy = 0;
+                var therow = -1;
+                var thecol = -1;
+                for (var _row = 0; _row < _this.CellHeights.length; _row++) {
+                    calcy += _this.CellHeights[_row];
+                    if (calcy >= realy) {
+                        // we have our row
+                        therow = _row;
+                        break;
+                    }
+                }
+                for (var _col = 0; _col < _this.CellWidths.length; _col++) {
+                    calcx += _this.CellWidths[_col];
+                    if (calcx >= realx) {
+                        // we have our col
+                        thecol = _col;
+                        break;
+                    }
+                }
+                // Are we over one of the Scroll Bars
+                // 
+                if (_this.HorizontalScrollBarVisible && (ev.offsetY > _this.TheCanvas.height - _this.SliderThickness)) {
+                    therow = -1;
+                }
+                if (_this.VerticleScrollBarVisible && (ev.offsetX > _this.TheCanvas.width - _this.SliderThickness)) {
+                    thecol = -1;
+                }
+                if (therow != -1 && thecol != -1) {
+                    // lets get the value 
+                    _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol);
+                    _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
+                }
             }
-            _this.FillCanvas();
         };
         this.HandleMouseUp = function (ev) {
             // when the user lets go of the mouse button reset the scrollable 
@@ -311,8 +340,6 @@ var LCTDataGrid = /** @class */ (function () {
             _this.LastMouseX = 0;
             _this.LastMouseY = 0;
             _this.ScrollButtonDown = false;
-            _this.OverScrollBars = false;
-            _this.FillCanvas();
         };
         this.HandleMouseOut = function (ev) {
             // when the mouse leaves the canvas reset the scrollable stuff to initialized 
@@ -320,39 +347,10 @@ var LCTDataGrid = /** @class */ (function () {
             _this.LastMouseX = 0;
             _this.LastMouseY = 0;
             _this.ScrollButtonDown = false;
-            _this.OverScrollBars = false;
             if (_this.HoverHighlight) {
                 _this.RowHoveredOver = -1;
                 _this.FillCanvas();
             }
-        };
-        this.mouseWheelEvent = function (e) {
-            var delta = e.wheelDelta ? e.wheelDelta : -e.detail;
-            if (delta > 0)
-                delta = 7;
-            else
-                delta = -7;
-            if (_this.HorizontalScrollBarVisible && (e.offsetY > (_this.TheCanvas.height - (_this.SliderThickness * 2)))) {
-                _this.HorizontalOffset += delta;
-                if (_this.HorizontalOffset < 0) {
-                    _this.HorizontalOffset = 0;
-                }
-                if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
-                    _this.HorizontalOffset = _this.MaximumHorizontalOffset;
-                }
-            }
-            if (_this.VerticleScrollBarVisible && (e.offsetX > (_this.TheCanvas.width - (_this.SliderThickness * 2)))) {
-                _this.VerticleOffset += delta;
-                if (_this.VerticleOffset < 0) {
-                    _this.VerticleOffset = 0;
-                }
-                if (_this.VerticleOffset > _this.MaximumVerticleOffset) {
-                    _this.VerticleOffset = _this.MaximumVerticleOffset;
-                }
-            }
-            _this.FillCanvas();
-            e.preventDefault();
-            return false; // eat the mousewheel
         };
         this.TheCanvas = element;
         //this.TheDiv = container;
@@ -360,11 +358,6 @@ var LCTDataGrid = /** @class */ (function () {
         // call the resizeCanvas() function each time
         // the window is resized.
         window.addEventListener("resize", this.resizeCanvas, false);
-        // for everybody else
-        this.TheCanvas.addEventListener('mousewheel', this.mouseWheelEvent);
-        // For Firefox
-        this.TheCanvas.addEventListener('DOMMouseScroll', this.mouseWheelEvent);
-        // other events
         this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
         this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
         this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
@@ -505,12 +498,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.style.width = "100%";
         this.TheCanvas.style.height = "100%";
         // ...then set the internal size to match
-        this.TheCanvas.width = this.TheCanvas.clientWidth;
-        this.TheCanvas.height = this.TheCanvas.clientHeight;
-        this.ClearCanvas();
-        this.RedrawCanvas();
-        //this.HorizontalOffset = 0;
-        //this.VerticleOffset = 0;
+        this.TheCanvas.width = this.TheCanvas.offsetWidth;
+        this.TheCanvas.height = this.TheCanvas.offsetHeight;
     };
     LCTDataGrid.prototype.SetGridOutline = function (flag) {
         this.OutlineOn = flag;
@@ -550,6 +539,10 @@ var LCTDataGrid = /** @class */ (function () {
     };
     LCTDataGrid.prototype.SetTitleFont = function (fnt) {
         this.TitleFont = fnt;
+        this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetTitle = function (title) {
+        this.Title = title;
         this.FillCanvas();
     };
     LCTDataGrid.prototype.SetTitleVisible = function (flag) {
@@ -612,9 +605,6 @@ var LCTDataGrid = /** @class */ (function () {
         this.RowHoveredOver = -1;
         this.CalculatedGridHeightTotal = 0;
         this.CalculatedGridWidthTotal = 0;
-        this.HorizontalScrollBarVisible = false;
-        this.VerticleScrollBarVisible = false;
-        this.OverScrollBars = false;
     };
     LCTDataGrid.prototype.FillCanvas = function () {
         this.resize();
@@ -821,12 +811,12 @@ var LCTDataGrid = /** @class */ (function () {
         }
         // Here we want to see of the VIEW is smaller than the 
         // content and if so we need to show some scrollbars
-        //console.log("Canvas Width: " + this.TheCanvas.width);
-        //console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
-        //console.log("HorizontalOffset: " + this.HorizontalOffset);
+        console.log("Canvas Width: " + this.TheCanvas.width);
+        console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+        console.log("HorizontalOffset: " + this.HorizontalOffset);
         if (this.TheCanvas.width < this.CalculatedGridWidthTotal) {
             // we are narrower
-            //console.log("Narrower");
+            console.log("Narrower");
             // OK so lets Draw a slider along the bottom
             ctx.fillStyle = this.SliderBackColor;
             ctx.fillRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
@@ -840,11 +830,10 @@ var LCTDataGrid = /** @class */ (function () {
         }
         else {
             this.HorizontalScrollBarVisible = false;
-            this.HorizontalOffset = 0;
         }
         if (this.TheCanvas.height < this.CalculatedGridHeightTotal) {
             // we are shorter
-            //console.log("Shorter");
+            console.log("Shorter");
             ctx.fillStyle = this.SliderBackColor;
             ctx.fillRect(this.TheCanvas.width - this.SliderThickness, 0, this.SliderThickness, this.TheCanvas.height);
             ctx.strokeStyle = this.SliderForeColor;
@@ -858,7 +847,6 @@ var LCTDataGrid = /** @class */ (function () {
         }
         else {
             this.VerticleScrollBarVisible = false;
-            this.VerticleOffset = 0;
         }
     };
     LCTDataGrid.prototype.ClearCanvas = function () {
@@ -889,52 +877,10 @@ var LCTDataGrid = /** @class */ (function () {
         // right mousebutton context menu
         console.log("Context Menu");
         console.log(ev);
-        this.FillCanvas();
     };
     LCTDataGrid.prototype.HandleDoubleClick = function (ev) {
         console.log("Double Click");
         console.log(ev);
-        this.FillCanvas();
-    };
-    LCTDataGrid.prototype.HandleATouch_or_Mouse = function (offsetx, offsety) {
-        var realx = this.LastMouseX + this.HorizontalOffset;
-        var realy = this.LastMouseY + this.VerticleOffset - this.TitleHeight - this.GridHeaderHeight;
-        var calcx = 0;
-        var calcy = 0;
-        var therow = -1;
-        var thecol = -1;
-        for (var _row = 0; _row < this.CellHeights.length; _row++) {
-            calcy += this.CellHeights[_row];
-            if (calcy >= realy) {
-                // we have our row
-                therow = _row;
-                break;
-            }
-        }
-        for (var _col = 0; _col < this.CellWidths.length; _col++) {
-            calcx += this.CellWidths[_col];
-            if (calcx >= realx) {
-                // we have our col
-                thecol = _col;
-                break;
-            }
-        }
-        // Are we over one of the Scroll Bars
-        // 
-        this.OverScrollBars = false;
-        if (this.HorizontalScrollBarVisible && (offsety > this.TheCanvas.height - this.SliderThickness)) {
-            therow = -1;
-            this.OverScrollBars = true;
-        }
-        if (this.VerticleScrollBarVisible && (offsetx > this.TheCanvas.width - this.SliderThickness)) {
-            thecol = -1;
-            this.OverScrollBars = true;
-        }
-        if (therow != -1 && thecol != -1) {
-            // lets get the value 
-            this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol], therow, thecol);
-            this.TheCanvas.dispatchEvent(this.CellClickedEvent);
-        }
     };
     LCTDataGrid.prototype.GetImage = function () {
         return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';
