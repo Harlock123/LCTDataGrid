@@ -5,7 +5,15 @@
     ["William Taft","REGION 1a","40","80","~2","Today","Today"],
     ["Delta Dawn","REGION 2","35","76","~2","Last Tuesday","Today"],
     ["Richard Garis","REGION 3","101","105","~1","Last Tuesday","Today"],
-    ["Mary Tuft","REGION 2","35","70","2","Last Monday","Today"]
+    ["Mary Tuft","REGION 2","35","70","2","Last Monday","Today"],
+    ["Rooseta Stone","REGION 3","35","70","2","Last Monday","Tomorrow"],
+    ["Mr Pibb","REGION 1","35","70","2","Last Tuesday","Today"],
+    ["Anna Nova","REGION 1a","35","70","2","Last Sunday","Today"],
+    ["J.P Summersquash","REGION 3","35","70","2","Last Tuesday","Today"],
+    ["Mr Anderson","REGION 2","35","70","2","Last Monday","Today"],
+    ["Rooster Cogburne","REGION 3","35","70","2","Last Tuesday","Tomorrow"],
+    ["Babylon Five","REGION 1","35","70","2","Last Sunday","Today"],
+    ["Johanus Harlock","REGION 1","35","70","2","Last Monday","Today"]
             
     ]
 }
