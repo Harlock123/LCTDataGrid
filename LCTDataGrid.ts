@@ -738,7 +738,7 @@ class LCTDataGrid {
     console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
     console.log("HorizontalOffset: " + this.HorizontalOffset);
 
-
+    // Calculate if ScrollBars are visible...
     if (<number>this.TheCanvas.width < this.CalculatedGridWidthTotal)
     {
       // we are narrower
@@ -766,7 +766,17 @@ class LCTDataGrid {
       this.HorizontalScrollBarVisible = false;
     }
 
-    if (<number>this.TheCanvas.height < this.CalculatedGridHeightTotal)
+    var cheight = this.CalculatedGridHeightTotal;
+
+    if (this.TitleVisible){
+      cheight += this.TitleHeight;
+    }
+
+    if (this.GridHeaderVisible) {
+      cheight+= this.GridHeaderHeight;
+    }
+
+    if (<number>this.TheCanvas.height < cheight)// this.CalculatedGridHeightTotal)
     {
       // we are shorter
       console.log("Shorter");
@@ -1187,6 +1197,8 @@ class LCTDataGrid {
 
       }
     }
+
+    ev.preventDefault();
   };
 
   HandleMouseDown = (ev: MouseEvent) => {
@@ -1255,6 +1267,8 @@ class LCTDataGrid {
         
       }
     }
+
+    ev.preventDefault();
   };
 
   HandleMouseUp = (ev: MouseEvent) => {
@@ -1264,6 +1278,8 @@ class LCTDataGrid {
     this.LastMouseX = 0;
     this.LastMouseY = 0;
     this.ScrollButtonDown = false;
+
+    ev.preventDefault();
 
   };
 
@@ -1280,6 +1296,8 @@ class LCTDataGrid {
       this.RowHoveredOver = -1;
       this.FillCanvas();
     }
+
+    ev.preventDefault();
   }
 
   GetImage() {

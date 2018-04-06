@@ -287,6 +287,7 @@ var LCTDataGrid = /** @class */ (function () {
                     }
                 }
             }
+            ev.preventDefault();
         };
         this.HandleMouseDown = function (ev) {
             //this.Drawing = true;
@@ -333,6 +334,7 @@ var LCTDataGrid = /** @class */ (function () {
                     _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
                 }
             }
+            ev.preventDefault();
         };
         this.HandleMouseUp = function (ev) {
             // when the user lets go of the mouse button reset the scrollable 
@@ -340,6 +342,7 @@ var LCTDataGrid = /** @class */ (function () {
             _this.LastMouseX = 0;
             _this.LastMouseY = 0;
             _this.ScrollButtonDown = false;
+            ev.preventDefault();
         };
         this.HandleMouseOut = function (ev) {
             // when the mouse leaves the canvas reset the scrollable stuff to initialized 
@@ -351,6 +354,7 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.RowHoveredOver = -1;
                 _this.FillCanvas();
             }
+            ev.preventDefault();
         };
         this.TheCanvas = element;
         //this.TheDiv = container;
@@ -814,6 +818,7 @@ var LCTDataGrid = /** @class */ (function () {
         console.log("Canvas Width: " + this.TheCanvas.width);
         console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
         console.log("HorizontalOffset: " + this.HorizontalOffset);
+        // Calculate if ScrollBars are visible...
         if (this.TheCanvas.width < this.CalculatedGridWidthTotal) {
             // we are narrower
             console.log("Narrower");
@@ -831,7 +836,14 @@ var LCTDataGrid = /** @class */ (function () {
         else {
             this.HorizontalScrollBarVisible = false;
         }
-        if (this.TheCanvas.height < this.CalculatedGridHeightTotal) {
+        var cheight = this.CalculatedGridHeightTotal;
+        if (this.TitleVisible) {
+            cheight += this.TitleHeight;
+        }
+        if (this.GridHeaderVisible) {
+            cheight += this.GridHeaderHeight;
+        }
+        if (this.TheCanvas.height < cheight) {
             // we are shorter
             console.log("Shorter");
             ctx.fillStyle = this.SliderBackColor;
