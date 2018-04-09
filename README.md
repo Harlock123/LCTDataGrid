@@ -7,13 +7,13 @@ Using Is Simple
 
 include the Grid Javascript in your HTML someplace
 
-<script src="LCTDataGrid.js"></script>
+        <script src="LCTDataGrid.js"></script>
 
 Then Place a canvas somewhere in your content that you want to rasterize the grid on.
 
-<div id="LCTDataGrid" style="height:70vh; width: 98vw" >
-        <canvas id="LCTDataGridCanvas" class="LCTDataGrid" ></canvas>
-</div>
+        <div id="LCTDataGrid" style="height:70vh; width: 98vw" >
+                <canvas id="LCTDataGridCanvas" class="LCTDataGrid" ></canvas>
+        </div>
 
 In this case its in a DIV that is set to be 70% of the browsers height and 98% of the browsers width...
 The canvas is inside of that div set to consume all of its available space...
