@@ -40,6 +40,7 @@ class LCTDataGrid {
   GridHeader: string[] = [];
   GridRows: string[] = [];
   GridCols: string[] = [];
+  GridColAlignments: string[];
   GridHeaderHeight: number = 0;
 
   CellBackColor: string = "#FFFFFF";
@@ -279,6 +280,13 @@ class LCTDataGrid {
       this.SliderThickness = Number(theval) ; 
     }
 
+    this.GridColAlignments = [];
+
+    for(var i=0;i<this.GridHeader.length;i++)
+    {
+      this.GridColAlignments.push("");
+    }
+
 
     //CellHighlightBackColor
   }
@@ -324,8 +332,7 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-  SetHoverHighlight(trigger: boolean)
-  {
+  SetHoverHighlight(trigger: boolean) {
     this.HoverHighlight = trigger;
     this.FillCanvas();
   }
@@ -410,14 +417,18 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-  SetGridRowsJSON(TheRows: string)
-  {
+  SetGridRowsJSON(TheRows: string) {
     this.GridRows = JSON.parse(TheRows);
     
     this.InitializeGridParameters();
 
     this.FillCanvas();
 
+  }
+
+  SetGridColAlignments(TheColAlignments: string[]) {
+    this.GridColAlignments = TheColAlignments;
+    this.FillCanvas();
   }
 
   private InitializeGridParameters() {
@@ -448,8 +459,7 @@ class LCTDataGrid {
     }
   }
 
-  private CalculateColumnWidths()
-  {
+  private CalculateColumnWidths() {
     this.CellWidths = [];
     this.CellHeights = [];
     this.CalculatedGridHeightTotal = 0;
@@ -568,8 +578,7 @@ class LCTDataGrid {
 
   }
 
-  private CaclulateTitleHeightAndHeaderHeight()
-  {
+  private CaclulateTitleHeightAndHeaderHeight() {
     var ctx = this.TheCanvas.getContext("2d");
     if (this.TitleVisible)
     {
@@ -817,8 +826,7 @@ class LCTDataGrid {
 
   // URL Populate Methods
 
-  PopulateFromJSONUrl(DukeOfURL: string)
-  {
+  PopulateFromJSONUrl(DukeOfURL: string) {
 
     var Self = this;
 
@@ -835,26 +843,31 @@ class LCTDataGrid {
 
   SetGridHeader(Headers: string[]) {
     this.GridHeader = Headers;
+
+    this.GridColAlignments = [];
+
+    for(var i=0;i<this.GridHeader.length;i++)
+    {
+      this.GridColAlignments.push("");
+    }
+
     this.CalculateColumnWidths();
     this.FillCanvas();
   }
 
   // Event Handlers
 
-  HandleContextMenu(ev: Event)
-  {
+  HandleContextMenu(ev: Event) {
     // right mousebutton context menu
 
     console.log("Context Menu");
     console.log(ev);
   }
 
-  HandleDoubleClick(ev: Event)
-  {
+  HandleDoubleClick(ev: Event) {
     console.log("Double Click");
     console.log(ev);
   }
-
 
   HandleTouchStart = (ev: TouchEvent) => {
     //this.Drawing = true;
