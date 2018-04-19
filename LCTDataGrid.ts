@@ -1,6 +1,9 @@
 /// <reference path="node_modules/@types/jquery/index.d.ts" />
 
 class LCTDataGrid {
+
+  // #region Variables
+  
   TheCanvas: HTMLCanvasElement;
  
   Drawing: boolean = false;
@@ -66,11 +69,16 @@ class LCTDataGrid {
   LastMouseX: number = 0;
   LastMouseY: number = 0;
 
+  CalculatedHorizontalScale: number = 0;
+  CalculatedVerticleScale: number = 0;
+
   private colwidths: number[] = [];
 
   // Event declarations for the grid
   CellClickedEvent = document.createEvent("Event");
   CellHoveredEvent = document.createEvent("Event");
+
+// #endregion
 
   constructor(element: HTMLCanvasElement) {
     this.TheCanvas = element;
@@ -442,6 +450,10 @@ class LCTDataGrid {
     this.RowHoveredOver = -1;
     this.CalculatedGridHeightTotal = 0;
     this.CalculatedGridWidthTotal = 0;
+    this.HorizontalScrollBarVisible = false;
+    this.VerticleScrollBarVisible = false;
+    this.MaximumHorizontalOffset = 0;
+    this.MaximumVerticleOffset = 0;
   }
 
   FillCanvas() {
@@ -452,6 +464,7 @@ class LCTDataGrid {
 
   private fillTextMultiLine(ctx, text, x, y) {
     var lineHeight = ctx.measureText("M").width * 1.2;
+    text += "";
     var lines = text.split(/\r\n|\r|\n/);
     for (var i = lines.length-1; i >= 0; --i) {
       ctx.fillText(lines[i], x, y);
@@ -467,6 +480,9 @@ class LCTDataGrid {
 
     var ctx = this.TheCanvas.getContext("2d");
     ctx.font = this.GridHeaderFont;
+
+    if (this.GridHeader == undefined)
+      this.GridHeader = [];
 
     for (var _i = 0; _i < this.GridHeader.length; _i++) {
       // Start by figuring out how wide each column would be with just header
@@ -491,13 +507,19 @@ class LCTDataGrid {
 
       for (var _curcol = 0;_curcol<this.GridRows[_currow].length;_curcol++)
       {
-        it = this.GridRows[_currow][_curcol];
+        it = this.GridRows[_currow][_curcol]+"";
         wid = 0; //ctx.measureText(it).width + 6;
         hei = ctx.measureText("M").width *1.2;
         
 
         // figure out how many lines of output are in this text element
-        var thelines = it.split(/\r\n|\r|\n/);
+
+        var thelines = [""];
+        if (it !== null)
+        {
+          var thelines = it.split(/\r\n|\r|\n/);
+        }
+        
         var celllines = thelines.length
 
         for (var cl =0;cl<thelines.length;cl++)
@@ -575,6 +597,12 @@ class LCTDataGrid {
     {
       this.MaximumVerticleOffset = 0;
     }
+
+    // now we want to set the Horizontal and verticle scale for scroll bar work
+
+    this.CalculatedHorizontalScale = this.CalculatedGridWidthTotal / this.TheCanvas.width;
+
+    this.CalculatedVerticleScale = this.CalculatedGridHeightTotal / this.TheCanvas.height;
 
   }
 
@@ -765,7 +793,7 @@ class LCTDataGrid {
 
       var hwidth = (<number>this.TheCanvas.width * (<number>this.TheCanvas.width / this.CalculatedGridWidthTotal));
 
-      ctx.fillRect(0 + this.HorizontalOffset,this.TheCanvas.height-this.SliderThickness + 2 ,hwidth,this.SliderThickness-4);
+      ctx.fillRect((0 + this.HorizontalOffset) / this.CalculatedHorizontalScale,this.TheCanvas.height-this.SliderThickness + 2 ,hwidth,this.SliderThickness-4);
 
       this.HorizontalScrollBarVisible = true;
       
@@ -802,7 +830,7 @@ class LCTDataGrid {
       //var hwidth = (<number>this.TheCanvas.width * (<number>this.TheCanvas.width / this.CalculatedGridWidthTotal));
       var wheight = (<number>this.TheCanvas.height * (<number>this.TheCanvas.height / this.CalculatedGridHeightTotal));
 
-      ctx.fillRect(this.TheCanvas.width - this.SliderThickness + 2,0+ this.VerticleOffset, this.TheCanvas.width-4,wheight);
+      ctx.fillRect(this.TheCanvas.width - this.SliderThickness + 2,(0 + this.VerticleOffset) / this.CalculatedVerticleScale, this.TheCanvas.width-4,wheight);
 
       this.VerticleScrollBarVisible = true;
       
@@ -831,16 +859,76 @@ class LCTDataGrid {
     var Self = this;
 
     $.get(DukeOfURL,function(data,status){
-      Self.GridHeader = data.Header;
-      Self.GridRows = data.Data;
 
-      Self.InitializeGridParameters();
-      Self.FillCanvas();
+
+      Self.SetDataFromJSONCall(data);
       
     },'json')
   }
-  
 
+  SetDataFromJSONCall(data: any) {
+
+    var tuple = 0;
+
+    for(let key in data)
+    {
+      if (key == "Header")
+      {
+        this.GridHeader = data.Header;
+        tuple += 1;
+      }
+
+      if (key == "Data")
+      {
+        this.GridRows = data.Data;
+        tuple += 1;
+      }
+    } 
+
+    if (tuple != 2)
+    {
+      // ok we may have a plain old array
+      // lets see if we can decode that
+
+      // we will start with the header
+
+      this.GridHeader = [];
+      this.GridRows = [];
+
+      var it = data[0];
+      
+      for (var keys in it)
+      {
+        this.GridHeader.push(keys);
+      }
+
+      this.GridRows = [];
+      
+      var grs = new Array();
+
+      for (var i =0;i<data.length;i++)
+      {
+        var therow: string[] = [];
+        var r = data[i];
+        for (var keys in r)
+        {
+          //this.GridRows[index].push
+          therow.push(r[keys]);
+        }
+        grs.push(therow);
+      }
+      this.GridRows = grs;
+    }
+      
+    this.InitializeGridParameters();
+    this.FillCanvas();
+
+    //var it = data[0];
+
+    //Object.keys(it).length
+
+  }
+  
   SetGridHeader(Headers: string[]) {
     this.GridHeader = Headers;
 
@@ -1028,7 +1116,22 @@ class LCTDataGrid {
       if (this.LastMouseX < ev.offsetX)
       {
         // moving left to right
-        this.HorizontalOffset += ev.offsetX - this.LastMouseX;
+
+        var delta = ev.offsetX - this.LastMouseX;
+
+        //var scale = this.CalculatedGridWidthTotal / delta;
+
+        console.log("LastMouseX       :" + this.LastMouseX);
+        console.log("Horizontal Offset:" + this.HorizontalOffset);
+        console.log("Grid Width Total :" + this.CalculatedGridWidthTotal);
+        console.log("Maximum Offset   :" + this.MaximumHorizontalOffset);
+        console.log("Delta            :" + delta);
+        console.log("HorizontalScale  :" + this.CalculatedHorizontalScale);
+        console.log("VerticleScale    :" + this.CalculatedVerticleScale);
+        
+        this.HorizontalOffset += delta * this.CalculatedHorizontalScale;
+
+        //this.HorizontalOffset += ev.offsetX - this.LastMouseX; //delta * scale; //ev.offsetX - this.LastMouseX;
         
         //if (this.HorizontalOffset>0)
         //{
@@ -1049,7 +1152,19 @@ class LCTDataGrid {
         if (this.LastMouseX > ev.offsetX)
         {
           // scrolling right to left
-          this.HorizontalOffset -= this.LastMouseX - ev.offsetX;
+
+          var delta = this.LastMouseX - ev.offsetX;
+
+          console.log("LastMouseX       :" + this.LastMouseX);
+          console.log("Horizontal Offset:" + this.HorizontalOffset);
+          console.log("Grid Width Total :" + this.CalculatedGridWidthTotal);
+          console.log("Maximum Offset   :" + this.MaximumHorizontalOffset);
+          console.log("Delta            :" + delta);
+          console.log("HorizontalScale  :" + this.CalculatedHorizontalScale);
+          console.log("VerticleScale    :" + this.CalculatedVerticleScale);
+
+          this.HorizontalOffset -= delta * this.CalculatedHorizontalScale;
+          //this.HorizontalOffset -= this.LastMouseX - ev.offsetX;
 
           if (this.HorizontalOffset<0)
           {
@@ -1069,8 +1184,19 @@ class LCTDataGrid {
 
       if (this.LastMouseY < ev.offsetY)
       {
-        // moving left to right
-        this.VerticleOffset += ev.offsetY - this.LastMouseY;
+        // moving Down
+
+        var delta = ev.offsetY - this.LastMouseY;
+
+        console.log("LastMouseY       :" + this.LastMouseY);
+        console.log("Verticle Offset  :" + this.VerticleOffset);
+        console.log("Grid Width Total :" + this.CalculatedGridWidthTotal);
+        console.log("Maximum Offset   :" + this.MaximumVerticleOffset);
+        console.log("Delta            :" + delta);
+        console.log("HorizontalScale  :" + this.CalculatedHorizontalScale);
+        console.log("VerticleScale    :" + this.CalculatedVerticleScale);
+
+        this.VerticleOffset += delta * this.CalculatedVerticleScale; //ev.offsetY - this.LastMouseY;
         
         //if (this.HorizontalOffset>0)
         //{
@@ -1091,8 +1217,22 @@ class LCTDataGrid {
       {
         if (this.LastMouseY > ev.offsetY)
         {
-          // scrolling right to left
-          this.VerticleOffset -= this.LastMouseY - ev.offsetY;
+          // scrolling UP
+
+          var delta = this.LastMouseY - ev.offsetY;
+
+          console.log("LastMouseY       :" + this.LastMouseY);
+          console.log("Verticle Offset  :" + this.VerticleOffset);
+          console.log("Grid Width Total :" + this.CalculatedGridWidthTotal);
+          console.log("Maximum Offset   :" + this.MaximumVerticleOffset);
+          console.log("Delta            :" + delta);
+          console.log("HorizontalScale  :" + this.CalculatedHorizontalScale);
+          console.log("VerticleScale    :" + this.CalculatedVerticleScale);
+
+          this.VerticleOffset -= delta * this.CalculatedVerticleScale; //ev.offsetY - this.LastMouseY;
+
+
+          //this.VerticleOffset -= this.LastMouseY - ev.offsetY;
 
           if (this.VerticleOffset<0)
           {

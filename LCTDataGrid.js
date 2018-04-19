@@ -1,5 +1,6 @@
 /// <reference path="node_modules/@types/jquery/index.d.ts" />
 var LCTDataGrid = /** @class */ (function () {
+    // #endregion
     function LCTDataGrid(element) {
         var _this = this;
         this.Drawing = false;
@@ -53,6 +54,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.ScrollButtonDown = false;
         this.LastMouseX = 0;
         this.LastMouseY = 0;
+        this.CalculatedHorizontalScale = 0;
+        this.CalculatedVerticleScale = 0;
         this.colwidths = [];
         // Event declarations for the grid
         this.CellClickedEvent = document.createEvent("Event");
@@ -168,7 +171,17 @@ var LCTDataGrid = /** @class */ (function () {
                 // we are scrolling
                 if (_this.LastMouseX < ev.offsetX) {
                     // moving left to right
-                    _this.HorizontalOffset += ev.offsetX - _this.LastMouseX;
+                    var delta = ev.offsetX - _this.LastMouseX;
+                    //var scale = this.CalculatedGridWidthTotal / delta;
+                    console.log("LastMouseX       :" + _this.LastMouseX);
+                    console.log("Horizontal Offset:" + _this.HorizontalOffset);
+                    console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                    console.log("Maximum Offset   :" + _this.MaximumHorizontalOffset);
+                    console.log("Delta            :" + delta);
+                    console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                    console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                    _this.HorizontalOffset += delta * _this.CalculatedHorizontalScale;
+                    //this.HorizontalOffset += ev.offsetX - this.LastMouseX; //delta * scale; //ev.offsetX - this.LastMouseX;
                     //if (this.HorizontalOffset>0)
                     //{
                     //this.HorizontalOffset = 0;
@@ -182,7 +195,16 @@ var LCTDataGrid = /** @class */ (function () {
                 else {
                     if (_this.LastMouseX > ev.offsetX) {
                         // scrolling right to left
-                        _this.HorizontalOffset -= _this.LastMouseX - ev.offsetX;
+                        var delta = _this.LastMouseX - ev.offsetX;
+                        console.log("LastMouseX       :" + _this.LastMouseX);
+                        console.log("Horizontal Offset:" + _this.HorizontalOffset);
+                        console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                        console.log("Maximum Offset   :" + _this.MaximumHorizontalOffset);
+                        console.log("Delta            :" + delta);
+                        console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                        console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                        _this.HorizontalOffset -= delta * _this.CalculatedHorizontalScale;
+                        //this.HorizontalOffset -= this.LastMouseX - ev.offsetX;
                         if (_this.HorizontalOffset < 0) {
                             _this.HorizontalOffset = 0;
                         }
@@ -194,8 +216,16 @@ var LCTDataGrid = /** @class */ (function () {
                     }
                 }
                 if (_this.LastMouseY < ev.offsetY) {
-                    // moving left to right
-                    _this.VerticleOffset += ev.offsetY - _this.LastMouseY;
+                    // moving Down
+                    var delta = ev.offsetY - _this.LastMouseY;
+                    console.log("LastMouseY       :" + _this.LastMouseY);
+                    console.log("Verticle Offset  :" + _this.VerticleOffset);
+                    console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                    console.log("Maximum Offset   :" + _this.MaximumVerticleOffset);
+                    console.log("Delta            :" + delta);
+                    console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                    console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                    _this.VerticleOffset += delta * _this.CalculatedVerticleScale; //ev.offsetY - this.LastMouseY;
                     //if (this.HorizontalOffset>0)
                     //{
                     //this.HorizontalOffset = 0;
@@ -208,8 +238,17 @@ var LCTDataGrid = /** @class */ (function () {
                 }
                 else {
                     if (_this.LastMouseY > ev.offsetY) {
-                        // scrolling right to left
-                        _this.VerticleOffset -= _this.LastMouseY - ev.offsetY;
+                        // scrolling UP
+                        var delta = _this.LastMouseY - ev.offsetY;
+                        console.log("LastMouseY       :" + _this.LastMouseY);
+                        console.log("Verticle Offset  :" + _this.VerticleOffset);
+                        console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                        console.log("Maximum Offset   :" + _this.MaximumVerticleOffset);
+                        console.log("Delta            :" + delta);
+                        console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                        console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                        _this.VerticleOffset -= delta * _this.CalculatedVerticleScale; //ev.offsetY - this.LastMouseY;
+                        //this.VerticleOffset -= this.LastMouseY - ev.offsetY;
                         if (_this.VerticleOffset < 0) {
                             _this.VerticleOffset = 0;
                         }
@@ -494,6 +533,10 @@ var LCTDataGrid = /** @class */ (function () {
         if (theval !== undefined && theval !== "") {
             this.SliderThickness = Number(theval);
         }
+        this.GridColAlignments = [];
+        for (var i = 0; i < this.GridHeader.length; i++) {
+            this.GridColAlignments.push("");
+        }
         //CellHighlightBackColor
     };
     LCTDataGrid.prototype.resize = function () {
@@ -598,6 +641,10 @@ var LCTDataGrid = /** @class */ (function () {
         this.InitializeGridParameters();
         this.FillCanvas();
     };
+    LCTDataGrid.prototype.SetGridColAlignments = function (TheColAlignments) {
+        this.GridColAlignments = TheColAlignments;
+        this.FillCanvas();
+    };
     LCTDataGrid.prototype.InitializeGridParameters = function () {
         this.ScrollButtonDown = false;
         this.LastMouseX = 0;
@@ -609,6 +656,10 @@ var LCTDataGrid = /** @class */ (function () {
         this.RowHoveredOver = -1;
         this.CalculatedGridHeightTotal = 0;
         this.CalculatedGridWidthTotal = 0;
+        this.HorizontalScrollBarVisible = false;
+        this.VerticleScrollBarVisible = false;
+        this.MaximumHorizontalOffset = 0;
+        this.MaximumVerticleOffset = 0;
     };
     LCTDataGrid.prototype.FillCanvas = function () {
         this.resize();
@@ -617,6 +668,7 @@ var LCTDataGrid = /** @class */ (function () {
     };
     LCTDataGrid.prototype.fillTextMultiLine = function (ctx, text, x, y) {
         var lineHeight = ctx.measureText("M").width * 1.2;
+        text += "";
         var lines = text.split(/\r\n|\r|\n/);
         for (var i = lines.length - 1; i >= 0; --i) {
             ctx.fillText(lines[i], x, y);
@@ -630,6 +682,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.CalculatedGridWidthTotal = 0;
         var ctx = this.TheCanvas.getContext("2d");
         ctx.font = this.GridHeaderFont;
+        if (this.GridHeader == undefined)
+            this.GridHeader = [];
         for (var _i = 0; _i < this.GridHeader.length; _i++) {
             // Start by figuring out how wide each column would be with just header
             var it = this.GridHeader[_i];
@@ -644,11 +698,14 @@ var LCTDataGrid = /** @class */ (function () {
             var Cellheight = 0;
             var numlines = 1;
             for (var _curcol = 0; _curcol < this.GridRows[_currow].length; _curcol++) {
-                it = this.GridRows[_currow][_curcol];
+                it = this.GridRows[_currow][_curcol] + "";
                 wid = 0; //ctx.measureText(it).width + 6;
                 hei = ctx.measureText("M").width * 1.2;
                 // figure out how many lines of output are in this text element
-                var thelines = it.split(/\r\n|\r|\n/);
+                var thelines = [""];
+                if (it !== null) {
+                    var thelines = it.split(/\r\n|\r|\n/);
+                }
                 var celllines = thelines.length;
                 for (var cl = 0; cl < thelines.length; cl++) {
                     var thewid = ctx.measureText(thelines[cl]).width + 6;
@@ -698,6 +755,9 @@ var LCTDataGrid = /** @class */ (function () {
         if (this.MaximumVerticleOffset < 0) {
             this.MaximumVerticleOffset = 0;
         }
+        // now we want to set the Horizontal and verticle scale for scroll bar work
+        this.CalculatedHorizontalScale = this.CalculatedGridWidthTotal / this.TheCanvas.width;
+        this.CalculatedVerticleScale = this.CalculatedGridHeightTotal / this.TheCanvas.height;
     };
     LCTDataGrid.prototype.CaclulateTitleHeightAndHeaderHeight = function () {
         var ctx = this.TheCanvas.getContext("2d");
@@ -830,7 +890,7 @@ var LCTDataGrid = /** @class */ (function () {
             ctx.strokeRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
             // calculate the position and dimension of the scroll bar button itself
             var hwidth = (this.TheCanvas.width * (this.TheCanvas.width / this.CalculatedGridWidthTotal));
-            ctx.fillRect(0 + this.HorizontalOffset, this.TheCanvas.height - this.SliderThickness + 2, hwidth, this.SliderThickness - 4);
+            ctx.fillRect((0 + this.HorizontalOffset) / this.CalculatedHorizontalScale, this.TheCanvas.height - this.SliderThickness + 2, hwidth, this.SliderThickness - 4);
             this.HorizontalScrollBarVisible = true;
         }
         else {
@@ -854,7 +914,7 @@ var LCTDataGrid = /** @class */ (function () {
             // calculate the position and dimension of the scroll bar button itself
             //var hwidth = (<number>this.TheCanvas.width * (<number>this.TheCanvas.width / this.CalculatedGridWidthTotal));
             var wheight = (this.TheCanvas.height * (this.TheCanvas.height / this.CalculatedGridHeightTotal));
-            ctx.fillRect(this.TheCanvas.width - this.SliderThickness + 2, 0 + this.VerticleOffset, this.TheCanvas.width - 4, wheight);
+            ctx.fillRect(this.TheCanvas.width - this.SliderThickness + 2, (0 + this.VerticleOffset) / this.CalculatedVerticleScale, this.TheCanvas.width - 4, wheight);
             this.VerticleScrollBarVisible = true;
         }
         else {
@@ -873,14 +933,55 @@ var LCTDataGrid = /** @class */ (function () {
     LCTDataGrid.prototype.PopulateFromJSONUrl = function (DukeOfURL) {
         var Self = this;
         $.get(DukeOfURL, function (data, status) {
-            Self.GridHeader = data.Header;
-            Self.GridRows = data.Data;
-            Self.InitializeGridParameters();
-            Self.FillCanvas();
+            Self.SetDataFromJSONCall(data);
         }, 'json');
+    };
+    LCTDataGrid.prototype.SetDataFromJSONCall = function (data) {
+        var tuple = 0;
+        for (var key in data) {
+            if (key == "Header") {
+                this.GridHeader = data.Header;
+                tuple += 1;
+            }
+            if (key == "Data") {
+                this.GridRows = data.Data;
+                tuple += 1;
+            }
+        }
+        if (tuple != 2) {
+            // ok we may have a plain old array
+            // lets see if we can decode that
+            // we will start with the header
+            this.GridHeader = [];
+            this.GridRows = [];
+            var it = data[0];
+            for (var keys in it) {
+                this.GridHeader.push(keys);
+            }
+            this.GridRows = [];
+            var grs = new Array();
+            for (var i = 0; i < data.length; i++) {
+                var therow = [];
+                var r = data[i];
+                for (var keys in r) {
+                    //this.GridRows[index].push
+                    therow.push(r[keys]);
+                }
+                grs.push(therow);
+            }
+            this.GridRows = grs;
+        }
+        this.InitializeGridParameters();
+        this.FillCanvas();
+        //var it = data[0];
+        //Object.keys(it).length
     };
     LCTDataGrid.prototype.SetGridHeader = function (Headers) {
         this.GridHeader = Headers;
+        this.GridColAlignments = [];
+        for (var i = 0; i < this.GridHeader.length; i++) {
+            this.GridColAlignments.push("");
+        }
         this.CalculateColumnWidths();
         this.FillCanvas();
     };
