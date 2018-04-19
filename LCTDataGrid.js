@@ -933,6 +933,7 @@ var LCTDataGrid = /** @class */ (function () {
     LCTDataGrid.prototype.PopulateFromJSONUrl = function (DukeOfURL) {
         var Self = this;
         $.get(DukeOfURL, function (data, status) {
+            console.log(data);
             Self.SetDataFromJSONCall(data);
         }, 'json');
     };

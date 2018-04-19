@@ -860,7 +860,8 @@ class LCTDataGrid {
 
     $.get(DukeOfURL,function(data,status){
 
-
+      //console.log(data);
+      
       Self.SetDataFromJSONCall(data);
       
     },'json')
