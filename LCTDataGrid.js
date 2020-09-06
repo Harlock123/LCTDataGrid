@@ -156,6 +156,34 @@ var LCTDataGrid = /** @class */ (function () {
             }
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
+        this.HandleMouseWheel = function (ev) {
+            ev.preventDefault();
+            console.log(ev.deltaY);
+            console.log(ev.deltaX);
+            console.log(ev.deltaZ);
+            if (_this.VerticleScrollBarVisible) {
+                _this.VerticleOffset += ev.deltaY / 2;
+                if (_this.VerticleOffset < 0) {
+                    _this.VerticleOffset = 0;
+                }
+                if (_this.VerticleOffset > _this.MaximumVerticleOffset) {
+                    _this.VerticleOffset = _this.MaximumVerticleOffset;
+                }
+                _this.FillCanvas();
+            }
+            else {
+                if (_this.HorizontalScrollBarVisible) {
+                    _this.HorizontalOffset += ev.deltaY;
+                    if (_this.HorizontalOffset < 0) {
+                        _this.HorizontalOffset = 0;
+                    }
+                    if (_this.HorizontalOffset > _this.MaximumHorizontalOffset) {
+                        _this.HorizontalOffset = _this.MaximumHorizontalOffset;
+                    }
+                }
+                _this.FillCanvas();
+            }
+        };
         this.HandleMouseMove = function (ev) {
             //if (this.Drawing) {
             //var ctx = this.TheCanvas.getContext("2d");
@@ -264,7 +292,8 @@ var LCTDataGrid = /** @class */ (function () {
             }
             else {
                 // we are not scrolling the grid so lets see if we are highlighting the current row
-                if (true) {
+                if (true) //(this.HoverHighlight)
+                 {
                     // We are highlighting the grids row being hovered over
                     var realx = ev.offsetX + _this.HorizontalOffset;
                     var realy = ev.offsetY + _this.VerticleOffset - _this.TitleHeight - _this.GridHeaderHeight;
@@ -410,6 +439,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.addEventListener("touchmove", this.HandleTouchMove);
         this.TheCanvas.addEventListener("contextmenu", this.HandleContextMenu);
         this.TheCanvas.addEventListener("dblclick", this.HandleDoubleClick);
+        this.TheCanvas.addEventListener("wheel", this.HandleMouseWheel);
         this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
         this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
         this.ApplyCustomCSSAttributes();
@@ -903,7 +933,8 @@ var LCTDataGrid = /** @class */ (function () {
         if (this.GridHeaderVisible) {
             cheight += this.GridHeaderHeight;
         }
-        if (this.TheCanvas.height < cheight) {
+        if (this.TheCanvas.height < cheight) // this.CalculatedGridHeightTotal)
+         {
             // we are shorter
             console.log("Shorter");
             ctx.fillStyle = this.SliderBackColor;
@@ -933,7 +964,7 @@ var LCTDataGrid = /** @class */ (function () {
     LCTDataGrid.prototype.PopulateFromJSONUrl = function (DukeOfURL) {
         var Self = this;
         $.get(DukeOfURL, function (data, status) {
-            console.log(data);
+            //console.log(data);
             Self.SetDataFromJSONCall(data);
         }, 'json');
     };

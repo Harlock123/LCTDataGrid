@@ -107,6 +107,8 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("dblclick", this.HandleDoubleClick);
 
+    this.TheCanvas.addEventListener("wheel", this.HandleMouseWheel);
+
     this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
 
     this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
@@ -1097,6 +1099,48 @@ class LCTDataGrid {
 
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
+
+  HandleMouseWheel = (ev: MouseWheelEvent) => {
+
+    ev.preventDefault();
+
+    console.log(ev.deltaY);
+    console.log(ev.deltaX);
+    console.log(ev.deltaZ);
+
+    if (this.VerticleScrollBarVisible) {
+
+      this.VerticleOffset += ev.deltaY/2;
+
+      if (this.VerticleOffset < 0) {
+        this.VerticleOffset = 0;
+      }
+
+      if (this.VerticleOffset > this.MaximumVerticleOffset) {
+        this.VerticleOffset = this.MaximumVerticleOffset;
+      }
+
+      this.FillCanvas();
+    } 
+    else
+    {
+      if (this.HorizontalScrollBarVisible) {
+
+        this.HorizontalOffset += ev.deltaY ;
+  
+        if (this.HorizontalOffset < 0) {
+          this.HorizontalOffset = 0;
+        }
+  
+        if (this.HorizontalOffset > this.MaximumHorizontalOffset) {
+          this.HorizontalOffset = this.MaximumHorizontalOffset;
+        }
+      }
+  
+        this.FillCanvas();
+    }
+    
+  }
 
   HandleMouseMove = (ev: MouseEvent) => {
     //if (this.Drawing) {
