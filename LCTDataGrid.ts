@@ -109,6 +109,10 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("wheel", this.HandleMouseWheel);
 
+    this.TheCanvas.addEventListener("keydown",this.HandleKeyDown);
+
+    this.TheCanvas.addEventListener("keyup",this.HandleKeyUp);
+    
     this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
 
     this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
@@ -948,6 +952,15 @@ class LCTDataGrid {
 
   // Event Handlers
 
+  HandleKeyDown(ev: _KeyboardEvent) {
+    console.log(ev.keyCode);
+  }
+
+  HandleKeyUp(ev: _KeyboardEvent) {
+    console.log(ev.keyCode);
+  }
+
+
   HandleContextMenu(ev: Event) {
     // right mousebutton context menu
 
@@ -1108,7 +1121,7 @@ class LCTDataGrid {
     console.log(ev.deltaX);
     console.log(ev.deltaZ);
 
-    if (this.VerticleScrollBarVisible) {
+    if (this.VerticleScrollBarVisible && !ev.ctrlKey) {
 
       this.VerticleOffset += ev.deltaY/2;
 

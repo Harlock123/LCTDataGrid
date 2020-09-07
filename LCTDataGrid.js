@@ -161,7 +161,7 @@ var LCTDataGrid = /** @class */ (function () {
             console.log(ev.deltaY);
             console.log(ev.deltaX);
             console.log(ev.deltaZ);
-            if (_this.VerticleScrollBarVisible) {
+            if (_this.VerticleScrollBarVisible && !ev.ctrlKey) {
                 _this.VerticleOffset += ev.deltaY / 2;
                 if (_this.VerticleOffset < 0) {
                     _this.VerticleOffset = 0;
@@ -440,6 +440,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.addEventListener("contextmenu", this.HandleContextMenu);
         this.TheCanvas.addEventListener("dblclick", this.HandleDoubleClick);
         this.TheCanvas.addEventListener("wheel", this.HandleMouseWheel);
+        this.TheCanvas.addEventListener("keydown", this.HandleKeyDown);
+        this.TheCanvas.addEventListener("keyup", this.HandleKeyUp);
         this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
         this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
         this.ApplyCustomCSSAttributes();
@@ -1018,6 +1020,12 @@ var LCTDataGrid = /** @class */ (function () {
         this.FillCanvas();
     };
     // Event Handlers
+    LCTDataGrid.prototype.HandleKeyDown = function (ev) {
+        console.log(ev.keyCode);
+    };
+    LCTDataGrid.prototype.HandleKeyUp = function (ev) {
+        console.log(ev.keyCode);
+    };
     LCTDataGrid.prototype.HandleContextMenu = function (ev) {
         // right mousebutton context menu
         console.log("Context Menu");
