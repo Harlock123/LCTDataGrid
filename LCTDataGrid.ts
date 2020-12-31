@@ -1382,7 +1382,7 @@ class LCTDataGrid {
         {
           // lets get the value 
 
-          this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
+          this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol,this.GridHeader[thecol]);
 
           this.TheCanvas.dispatchEvent(this.CellHoveredEvent);
 
@@ -1472,7 +1472,7 @@ class LCTDataGrid {
       {
         // lets get the value 
 
-        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol);
+        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol,this.GridHeader[thecol]);
 
         this.TheCanvas.dispatchEvent(this.CellClickedEvent);
         
@@ -1520,10 +1520,12 @@ class CELLCLICKEDMETADATA {
   CELLCLICKED: string;
   ROWCLICKED: number;
   COLCLICKED: number;
+  COLNAME: string;
   
-  constructor(CC: string, RowC: number, ColC: number) {
+  constructor(CC: string, RowC: number, ColC: number, GH: string) {
       this.CELLCLICKED = CC;
       this.ROWCLICKED = RowC;
       this.COLCLICKED = ColC;
+      this.COLNAME = GH;
   }
 }

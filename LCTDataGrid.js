@@ -339,7 +339,7 @@ var LCTDataGrid = /** @class */ (function () {
                     }
                     if (therow != -1 && thecol != -1) {
                         // lets get the value 
-                        _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol);
+                        _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol, _this.GridHeader[thecol]);
                         _this.TheCanvas.dispatchEvent(_this.CellHoveredEvent);
                         if (_this.HoverHighlight) {
                             _this.RowHoveredOver = therow;
@@ -398,7 +398,7 @@ var LCTDataGrid = /** @class */ (function () {
                 }
                 if (therow != -1 && thecol != -1) {
                     // lets get the value 
-                    _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol);
+                    _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol, _this.GridHeader[thecol]);
                     _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
                 }
             }
@@ -1041,10 +1041,11 @@ var LCTDataGrid = /** @class */ (function () {
     return LCTDataGrid;
 }());
 var CELLCLICKEDMETADATA = /** @class */ (function () {
-    function CELLCLICKEDMETADATA(CC, RowC, ColC) {
+    function CELLCLICKEDMETADATA(CC, RowC, ColC, GH) {
         this.CELLCLICKED = CC;
         this.ROWCLICKED = RowC;
         this.COLCLICKED = ColC;
+        this.COLNAME = GH;
     }
     return CELLCLICKEDMETADATA;
 }());
