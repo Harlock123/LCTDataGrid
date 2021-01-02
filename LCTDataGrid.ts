@@ -401,7 +401,7 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
-  SetBackgrAoundColor(col: string) {
+  SetBackgroundColor(col: string) {
     this.backcolor = col;
     this.FillCanvas();
   }
@@ -432,6 +432,9 @@ class LCTDataGrid {
   }
 
   SetGridRowsJSON(TheRows: string) {
+
+    //this.ClearGridContents();
+
     this.GridRows = JSON.parse(TheRows);
     
     this.InitializeGridParameters();
@@ -443,6 +446,12 @@ class LCTDataGrid {
   SetGridColAlignments(TheColAlignments: string[]) {
     this.GridColAlignments = TheColAlignments;
     this.FillCanvas();
+  }
+
+  ClearGridContents() {
+    this.GridHeader = [];
+    this.GridRows = [];
+    this.InitializeGridParameters();
   }
 
   private InitializeGridParameters() {
@@ -612,7 +621,7 @@ class LCTDataGrid {
 
   }
 
-  private CaclulateTitleHeightAndHeaderHeight() {
+  private CalculateTitleHeightAndHeaderHeight() {
     var ctx = this.TheCanvas.getContext("2d");
     if (this.TitleVisible)
     {
@@ -641,7 +650,7 @@ class LCTDataGrid {
     var cy = 0;
 
     this.CalculateColumnWidths();
-    this.CaclulateTitleHeightAndHeaderHeight();
+    this.CalculateTitleHeightAndHeaderHeight();
 
     cy = this.TitleHeight + this.GridHeaderHeight;
 

@@ -21,7 +21,7 @@ Then Place a canvas somewhere in your content that you want to rasterize the gri
 In this case its in a DIV that is set to be 70% of the browsers height and 98% of the browsers width...
 The canvas is inside of that div set to consume all of its available space...
 
-Then attached the grid to the canvas with...
+Then attach the grid to the canvas with...
 
         var el = document.getElementById('LCTDataGridCanvas');
 
@@ -31,6 +31,6 @@ Then attached the grid to the canvas with...
 
 The Grid will be drawn on the canvas. The index.html page will shows a number of other setup items like configuring and extended CSS block to configure the grids visuals (Fonts and Colors and sample data and son on)
 
-Also shown in that sample file are wrireing to grid events for cells being clicked on and hovered over and touched and so on.
+Also shown in that sample file are wiring to grid events for cells being clicked on and hovered over and touched and so on.
 
 There are also some other buttons that populate the grid with data from URLS and webservices

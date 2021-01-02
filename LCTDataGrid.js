@@ -644,7 +644,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.GridHeaderOutlineColor = col;
         this.FillCanvas();
     };
-    LCTDataGrid.prototype.SetBackgrAoundColor = function (col) {
+    LCTDataGrid.prototype.SetBackgroundColor = function (col) {
         this.backcolor = col;
         this.FillCanvas();
     };
@@ -669,6 +669,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.FillCanvas();
     };
     LCTDataGrid.prototype.SetGridRowsJSON = function (TheRows) {
+        //this.ClearGridContents();
         this.GridRows = JSON.parse(TheRows);
         this.InitializeGridParameters();
         this.FillCanvas();
@@ -676,6 +677,11 @@ var LCTDataGrid = /** @class */ (function () {
     LCTDataGrid.prototype.SetGridColAlignments = function (TheColAlignments) {
         this.GridColAlignments = TheColAlignments;
         this.FillCanvas();
+    };
+    LCTDataGrid.prototype.ClearGridContents = function () {
+        this.GridHeader = [];
+        this.GridRows = [];
+        this.InitializeGridParameters();
     };
     LCTDataGrid.prototype.InitializeGridParameters = function () {
         this.ScrollButtonDown = false;
@@ -791,7 +797,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.CalculatedHorizontalScale = this.CalculatedGridWidthTotal / this.TheCanvas.width;
         this.CalculatedVerticleScale = this.CalculatedGridHeightTotal / this.TheCanvas.height;
     };
-    LCTDataGrid.prototype.CaclulateTitleHeightAndHeaderHeight = function () {
+    LCTDataGrid.prototype.CalculateTitleHeightAndHeaderHeight = function () {
         var ctx = this.TheCanvas.getContext("2d");
         if (this.TitleVisible) {
             ctx.font = this.TitleFont;
@@ -812,7 +818,7 @@ var LCTDataGrid = /** @class */ (function () {
         var ctx = this.TheCanvas.getContext("2d");
         var cy = 0;
         this.CalculateColumnWidths();
-        this.CaclulateTitleHeightAndHeaderHeight();
+        this.CalculateTitleHeightAndHeaderHeight();
         cy = this.TitleHeight + this.GridHeaderHeight;
         var hei = 0;
         var lx = 0;
