@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Chrome against localhost",
             "port":9222, 
-            "runtimeExecutable": "/usr/bin/chromium",
+            "runtimeExecutable": "/usr/bin/google-chrome-stable",
             "url": "http://localhost:5500",
             "webRoot": "${workspaceFolder}"
             

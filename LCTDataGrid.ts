@@ -1122,7 +1122,7 @@ class LCTDataGrid {
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
 
-  HandleMouseWheel = (ev: MouseWheelEvent) => {
+  HandleMouseWheel = (ev: WheelEvent) => {
 
     ev.preventDefault();
 
