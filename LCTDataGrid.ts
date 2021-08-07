@@ -437,6 +437,10 @@ class LCTDataGrid {
 
     this.GridRows = JSON.parse(TheRows);
     
+    // Set the number of columns to match the handed in cols on the ThreRows
+    var a = this.GridRows[0].length;
+    this.GridHeader.length = a;
+
     this.InitializeGridParameters();
 
     this.FillCanvas();
