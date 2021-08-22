@@ -108,7 +108,9 @@
     onclick="var result = new Array(); var iresult = new Array(); 
         for(var i=0;i<8;i++){ iresult.push('Data_' + i + '\nLine 2')}; 
         for(var i=0;i<10;i++){result.push(iresult)}; 
-        DG.SetGridRowsJSON(JSON.stringify(result));" 
+        DG.SetGridRowsJSON(JSON.stringify(result));
+        DG.SetGridHeader(['COLUMN 1','COLUMN 2','COLUMN 3','COLUMN 4','COLUMN 5',
+                            'COLUMN 6','COLUMN 7','COLUMN 8']);" 
         id="btn2" value="Set Some Data">
 
 
