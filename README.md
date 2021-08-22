@@ -34,3 +34,9 @@ The Grid will be drawn on the canvas. The index.html page will shows a number of
 Also shown in that sample file are wiring to grid events for cells being clicked on and hovered over and touched and so on.
 
 There are also some other buttons that populate the grid with data from URLS and webservices
+
+For Grid contents where Scrollbars appear...
+- MouseWheel will scroll up and down
+- CTRL MouseWheel will scroll left and right
+
+
