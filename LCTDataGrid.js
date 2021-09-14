@@ -415,14 +415,34 @@ var LCTDataGrid = /** @class */ (function () {
         this.HandleMouseOut = function (ev) {
             // when the mouse leaves the canvas reset the scrollable stuff to initialized 
             // state...
-            _this.LastMouseX = 0;
-            _this.LastMouseY = 0;
-            _this.ScrollButtonDown = false;
+            //this.LastMouseX = 0;
+            //this.LastMouseY = 0;
+            //this.ScrollButtonDown = false;
             if (_this.HoverHighlight) {
                 _this.RowHoveredOver = -1;
                 _this.FillCanvas();
             }
             ev.preventDefault();
+        };
+        this.HandleMouseIn = function (ev) {
+            // when the mouse enters the canvas reset the scrollable stuff to initialized 
+            // state if the leftmousebutton is up
+            //console.log(ev.buttons + "MOUSEBUTTON");
+            if (ev.buttons !== 1) {
+                _this.LastMouseX = 0;
+                _this.LastMouseY = 0;
+                _this.ScrollButtonDown = false;
+            }
+            ev.preventDefault();
+            //this.LastMouseX = 0;
+            //this.LastMouseY = 0;
+            //this.ScrollButtonDown = false;
+            //if (this.HoverHighlight)
+            //{
+            //  this.RowHoveredOver = -1;
+            //  this.FillCanvas();
+            //}
+            //ev.preventDefault();
         };
         this.TheCanvas = element;
         //this.TheDiv = container;
@@ -432,6 +452,7 @@ var LCTDataGrid = /** @class */ (function () {
         window.addEventListener("resize", this.resizeCanvas, false);
         this.TheCanvas.addEventListener("mousemove", this.HandleMouseMove);
         this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
+        this.TheCanvas.addEventListener("mouseenter", this.HandleMouseIn);
         this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
         this.TheCanvas.addEventListener("mouseup", this.HandleMouseUp);
         this.TheCanvas.addEventListener("touchstart", this.HandleTouchStart);

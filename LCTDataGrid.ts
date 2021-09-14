@@ -93,6 +93,8 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("mouseleave", this.HandleMouseOut);
 
+    this.TheCanvas.addEventListener("mouseenter", this.HandleMouseIn);
+
     this.TheCanvas.addEventListener("mousedown", this.HandleMouseDown);
 
     this.TheCanvas.addEventListener("mouseup", this.HandleMouseUp);
@@ -1511,9 +1513,9 @@ class LCTDataGrid {
     // when the mouse leaves the canvas reset the scrollable stuff to initialized 
     // state...
 
-    this.LastMouseX = 0;
-    this.LastMouseY = 0;
-    this.ScrollButtonDown = false;
+    //this.LastMouseX = 0;
+    //this.LastMouseY = 0;
+    //this.ScrollButtonDown = false;
 
     if (this.HoverHighlight)
     {
@@ -1522,6 +1524,33 @@ class LCTDataGrid {
     }
 
     ev.preventDefault();
+  }
+
+  HandleMouseIn = (ev: MouseEvent) => {
+    // when the mouse enters the canvas reset the scrollable stuff to initialized 
+    // state if the leftmousebutton is up
+
+    //console.log(ev.buttons + "MOUSEBUTTON");
+
+    if (ev.buttons !== 1)
+    {
+      this.LastMouseX = 0;
+      this.LastMouseY = 0;
+      this.ScrollButtonDown = false;
+    }
+
+    ev.preventDefault();
+    //this.LastMouseX = 0;
+    //this.LastMouseY = 0;
+    //this.ScrollButtonDown = false;
+
+    //if (this.HoverHighlight)
+    //{
+    //  this.RowHoveredOver = -1;
+    //  this.FillCanvas();
+    //}
+
+    //ev.preventDefault();
   }
 
   GetImage() {
