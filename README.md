@@ -39,4 +39,8 @@ For Grid contents where Scrollbars appear...
 - MouseWheel will scroll up and down
 - CTRL MouseWheel will scroll left and right
 
+## Screenshots
 
+Shown below is the grid running the Large Query Test from its testing harness in both Chromium and Edge in Linux...
+
+![Screenshot](IMGs/Screenshot_20210915_061441.png)
