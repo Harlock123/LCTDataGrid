@@ -44,3 +44,11 @@ For Grid contents where Scrollbars appear...
 Shown below is the grid running the Large Query Test from its testing harness in both Chromium and Edge in Linux...
 
 ![Screenshot](IMGs/Screenshot_20210915_061441.png)
+
+The Grid running on a Phone...
+
+![Screenshot](IMGs/Screenshot_2018-02-01-14-16-08.png)
+
+The Grid in Greenbar mode with multiline content
+
+![Screenshot](IMGs/GridInGreenBarMode.png)
