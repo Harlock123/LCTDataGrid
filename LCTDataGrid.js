@@ -499,6 +499,10 @@ var LCTDataGrid = /** @class */ (function () {
         if (theval !== undefined && theval !== "") {
             this.TitleForeColor = theval;
         }
+        theval = TheCSS.getPropertyValue("--TitleHeight");
+        if (theval !== undefined && theval !== "") {
+            this.TitleHeight = JSON.parse(theval);
+        }
         theval = TheCSS.getPropertyValue("--TitleFont");
         if (theval !== undefined && theval !== "") {
             this.TitleFont = theval;
@@ -825,7 +829,10 @@ var LCTDataGrid = /** @class */ (function () {
         var ctx = this.TheCanvas.getContext("2d");
         if (this.TitleVisible) {
             ctx.font = this.TitleFont;
-            this.TitleHeight = ctx.measureText("M").width * 1.3;
+            var tmpth = ctx.measureText("M").width * 1.3;
+            if (tmpth > this.TitleHeight) {
+                this.TitleHeight = tmpth;
+            }
         }
         else {
             this.TitleHeight = 0;

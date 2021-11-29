@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
+    <meta charset="utf-8">
     <title>LCT Data Grid Test</title>
 </head>
 <body>
@@ -15,6 +16,7 @@
                     --TitleBackColor: #4e4e8b;
                     --TitleForeColor: white;
                     --TitleFont: 18pt Arial;
+                    --TitleHeight: 15;
                     --Title: This is a really long title created using custom CSS Properties;
 
                     --GridRows: [
@@ -168,8 +170,8 @@
 
     <br>
     MouseClick Event Data:_____________________MouseHover Event Data<br>
-    <textarea id="MOUSECLICKAREA" rows=6 cols=40></textarea>
-    <textarea id="MOUSEHOVERAREA" rows=6 cols=40></textarea>
+    <textarea aria-label="Clicked Status" id="MOUSECLICKAREA" rows=6 cols=40></textarea>
+    <textarea aria-label="Hover Status" id="MOUSEHOVERAREA" rows=6 cols=40></textarea>
     <!--
 
     <input type="button" onclick="SP.SetBackgroundColor('#ff9999')" id="btn2" value="Red Background">

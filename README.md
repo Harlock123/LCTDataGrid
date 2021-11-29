@@ -36,6 +36,7 @@ Also shown in that sample file are wiring to grid events for cells being clicked
 There are also some other buttons that populate the grid with data from URLS and webservices
 
 For Grid contents where Scrollbars appear...
+
 - MouseWheel will scroll up and down
 - CTRL MouseWheel will scroll left and right
 

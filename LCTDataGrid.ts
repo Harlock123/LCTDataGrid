@@ -173,6 +173,12 @@ class LCTDataGrid {
       this.TitleForeColor = theval;
     }
 
+    theval = TheCSS.getPropertyValue("--TitleHeight");
+
+    if (theval !== undefined && theval !== "") {
+      this.TitleHeight = JSON.parse(theval); 
+    }
+
     theval = TheCSS.getPropertyValue("--TitleFont");
 
     if (theval !== undefined && theval !== "") {
@@ -632,7 +638,11 @@ class LCTDataGrid {
     if (this.TitleVisible)
     {
       ctx.font = this.TitleFont;
-      this.TitleHeight = ctx.measureText("M").width * 1.3;
+      var tmpth = ctx.measureText("M").width * 1.3;
+      if (tmpth > this.TitleHeight)
+      {
+        this.TitleHeight = tmpth;
+      }
     }
     else
     {
