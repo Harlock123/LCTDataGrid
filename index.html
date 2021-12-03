@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
+    
 <head>
-    <meta charset="utf-8">
+    <meta charset = "UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LCT Data Grid Test</title>
 </head>
 <body>
@@ -98,6 +99,21 @@
                     el.innerHTML = v;
                 }, true);
 
+        el.addEventListener('CELLDOUBLECLICKED',
+            function (e) {
+                var v = "Cell DoubleClicked \n" + 
+                    DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + 
+                    DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + 
+                    DG.CELLCLICKEDINFO.COLCLICKED + "\n LABELED " +
+                    DG.CELLCLICKEDINFO.COLNAME;
+                
+                    var el = document.getElementById('MOUSEDBLCLICK');
+
+                    el.innerHTML = v;
+                }, true);
+
+           
+
     </script>
 
     <input type="button" 
@@ -169,9 +185,10 @@
     id="btn11" value="Big Assed Query">
 
     <br>
-    MouseClick Event Data:_____________________MouseHover Event Data<br>
+    MouseClick Event Data:_____________________MouseHover Event Data ___________________ DOUBLECLICK<br>
     <textarea aria-label="Clicked Status" id="MOUSECLICKAREA" rows=6 cols=40></textarea>
     <textarea aria-label="Hover Status" id="MOUSEHOVERAREA" rows=6 cols=40></textarea>
+    <textarea aria-label="Double Click Status" id="MOUSEDBLCLICK" rows=6 cols=40></textarea>
     <!--
 
     <input type="button" onclick="SP.SetBackgroundColor('#ff9999')" id="btn2" value="Red Background">

@@ -60,9 +60,16 @@ var LCTDataGrid = /** @class */ (function () {
         // Event declarations for the grid
         this.CellClickedEvent = document.createEvent("Event");
         this.CellHoveredEvent = document.createEvent("Event");
+        this.CellDoubleClickedEvent = document.createEvent("Event");
         this.resizeCanvas = function (ev) {
             _this.resize;
             _this.FillCanvas();
+        };
+        this.HandleDoubleClick = function (ev) {
+            if (_this.CELLCLICKEDINFO.ROWCLICKED != -1) {
+                _this.TheCanvas.dispatchEvent(_this.CellDoubleClickedEvent);
+            }
+            ev.preventDefault();
         };
         this.HandleTouchStart = function (ev) {
             //this.Drawing = true;
@@ -401,6 +408,9 @@ var LCTDataGrid = /** @class */ (function () {
                     _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol, _this.GridHeader[thecol]);
                     _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
                 }
+                else {
+                    _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA('', -1, -1, '');
+                }
             }
             ev.preventDefault();
         };
@@ -465,6 +475,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.addEventListener("keyup", this.HandleKeyUp);
         this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
         this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
+        this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED', true, true);
         this.ApplyCustomCSSAttributes();
         this.InitializeGridParameters();
     }
@@ -1066,10 +1077,6 @@ var LCTDataGrid = /** @class */ (function () {
     LCTDataGrid.prototype.HandleContextMenu = function (ev) {
         // right mousebutton context menu
         console.log("Context Menu");
-        console.log(ev);
-    };
-    LCTDataGrid.prototype.HandleDoubleClick = function (ev) {
-        console.log("Double Click");
         console.log(ev);
     };
     LCTDataGrid.prototype.GetImage = function () {

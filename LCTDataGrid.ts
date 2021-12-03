@@ -77,6 +77,7 @@ class LCTDataGrid {
   // Event declarations for the grid
   CellClickedEvent = document.createEvent("Event");
   CellHoveredEvent = document.createEvent("Event");
+  CellDoubleClickedEvent = document.createEvent("Event");
 
 // #endregion
 
@@ -118,6 +119,8 @@ class LCTDataGrid {
     this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
 
     this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
+
+    this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED',true,true);
 
     this.ApplyCustomCSSAttributes();
 
@@ -993,11 +996,16 @@ class LCTDataGrid {
     console.log(ev);
   }
 
-  HandleDoubleClick(ev: Event) {
-    console.log("Double Click");
-    console.log(ev);
-  }
+  HandleDoubleClick = (ev: MouseEvent) => {
+    
+    if (this.CELLCLICKEDINFO.ROWCLICKED != -1)
+    {
+      this.TheCanvas.dispatchEvent(this.CellDoubleClickedEvent);
+    }
 
+    ev.preventDefault();
+  };
+  
   HandleTouchStart = (ev: TouchEvent) => {
     //this.Drawing = true;
     //this.lastx = ev.touches[0].clientX;
@@ -1501,6 +1509,10 @@ class LCTDataGrid {
 
         this.TheCanvas.dispatchEvent(this.CellClickedEvent);
         
+      }
+      else
+      {
+        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA('',-1,-1,'');
       }
     }
 
