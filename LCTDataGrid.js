@@ -68,8 +68,9 @@ var LCTDataGrid = /** @class */ (function () {
         this.HandleDoubleClick = function (ev) {
             if (_this.CELLCLICKEDINFO.ROWCLICKED != -1) {
                 _this.TheCanvas.dispatchEvent(_this.CellDoubleClickedEvent);
+                ev.preventDefault();
             }
-            ev.preventDefault();
+            //ev.preventDefault();
         };
         this.HandleTouchStart = function (ev) {
             //this.Drawing = true;
@@ -473,9 +474,12 @@ var LCTDataGrid = /** @class */ (function () {
         this.TheCanvas.addEventListener("wheel", this.HandleMouseWheel);
         this.TheCanvas.addEventListener("keydown", this.HandleKeyDown);
         this.TheCanvas.addEventListener("keyup", this.HandleKeyUp);
-        this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
-        this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
-        this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED', true, true);
+        this.CellClickedEvent = new CustomEvent("CELLCLICKED", { bubbles: true, cancelable: true });
+        this.CellHoveredEvent = new CustomEvent("CELLHOVERED", { bubbles: true, cancelable: true });
+        this.CellDoubleClickedEvent = new CustomEvent("CELLDOUBLECLICKED", { bubbles: true, cancelable: true });
+        //this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
+        //this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
+        //this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED',true,true);
         this.ApplyCustomCSSAttributes();
         this.InitializeGridParameters();
     }

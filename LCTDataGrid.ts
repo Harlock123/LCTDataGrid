@@ -116,11 +116,17 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("keyup",this.HandleKeyUp);
     
-    this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
+    this.CellClickedEvent = new CustomEvent("CELLCLICKED",{bubbles: true,cancelable: true})
 
-    this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
+    this.CellHoveredEvent = new CustomEvent("CELLHOVERED",{bubbles: true,cancelable: true})
 
-    this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED',true,true);
+    this.CellDoubleClickedEvent = new CustomEvent("CELLDOUBLECLICKED",{bubbles: true,cancelable: true})
+
+    //this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
+
+    //this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
+
+    //this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED',true,true);
 
     this.ApplyCustomCSSAttributes();
 
@@ -994,6 +1000,7 @@ class LCTDataGrid {
 
     console.log("Context Menu");
     console.log(ev);
+    
   }
 
   HandleDoubleClick = (ev: MouseEvent) => {
@@ -1001,9 +1008,11 @@ class LCTDataGrid {
     if (this.CELLCLICKEDINFO.ROWCLICKED != -1)
     {
       this.TheCanvas.dispatchEvent(this.CellDoubleClickedEvent);
+      ev.preventDefault();
+
     }
 
-    ev.preventDefault();
+    //ev.preventDefault();
   };
   
   HandleTouchStart = (ev: TouchEvent) => {
