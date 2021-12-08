@@ -48,6 +48,7 @@ class LCTDataGrid {
 
   CellBackColor: string = "#FFFFFF";
   CellHighlightBackColor: string = "#AAAAAA";
+  RowSelectedBackColor: string = "#BBBBBB";
   AlternateCellBackColor: string = "#30F030";
   AlternateRowColoring: boolean = false;
   CellForeColor: string = "#000000";
@@ -60,6 +61,8 @@ class LCTDataGrid {
   RowHoveredOver: number = -1;
 
   CELLCLICKEDINFO: CELLCLICKEDMETADATA = null;
+
+  SelectedRow: number =-1;
 
   HorizontalOffset: number = 0;
   VerticleOffset: number = 0;
@@ -469,6 +472,14 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
+  SetSelectedRow(TheRowToHighlight: number) {
+    if (TheRowToHighlight < this.GridRows.length)
+    {
+      this.SelectedRow = TheRowToHighlight;
+      this.FillCanvas();
+    }
+  }
+
   ClearGridContents() {
     this.GridHeader = [];
     this.GridRows = [];
@@ -723,7 +734,16 @@ class LCTDataGrid {
             }
             else
             {
-              ctx.fillStyle = this.AlternateCellBackColor;
+              if (_currow == this.SelectedRow)
+              {
+                // here we want to highlight the row that has been selected
+                ctx.fillStyle  = this.RowSelectedBackColor;
+
+              }
+              else
+              {
+                ctx.fillStyle = this.AlternateCellBackColor;
+              }
             }
           }
         }
@@ -735,7 +755,16 @@ class LCTDataGrid {
           }
           else
           {
-            ctx.fillStyle = this.CellBackColor;
+            if (_currow == this.SelectedRow)
+              {
+                // here we want to highlight the row that has been selected
+                ctx.fillStyle  = this.RowSelectedBackColor;
+
+              }
+              else
+              {
+                ctx.fillStyle = this.CellBackColor;
+              }
           }
         }
         ctx.fillRect(lx-this.HorizontalOffset, ly-this.VerticleOffset, this.CellWidths[_curcol], hei);
@@ -1007,9 +1036,17 @@ class LCTDataGrid {
     
     if (this.CELLCLICKEDINFO.ROWCLICKED != -1)
     {
+
+      if (this.SelectedRow!= this.CELLCLICKEDINFO.ROWCLICKED)
+        this.SelectedRow = this.CELLCLICKEDINFO.ROWCLICKED;
+
       this.TheCanvas.dispatchEvent(this.CellDoubleClickedEvent);
       ev.preventDefault();
 
+    }
+    else
+    {
+      this.SelectedRow = -1;
     }
 
     //ev.preventDefault();
@@ -1514,13 +1551,22 @@ class LCTDataGrid {
       {
         // lets get the value 
 
-        this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol,this.GridHeader[thecol]);
+        if (therow === this.SelectedRow)
+        {
+          this.SelectedRow = -1;
+        }
+        else
+        {
+          this.SelectedRow = therow;
+          this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(this.GridRows[therow][thecol],therow,thecol,this.GridHeader[thecol]);
 
-        this.TheCanvas.dispatchEvent(this.CellClickedEvent);
+          this.TheCanvas.dispatchEvent(this.CellClickedEvent);
+        }
         
       }
       else
       {
+        this.SelectedRow = -1;
         this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA('',-1,-1,'');
       }
     }

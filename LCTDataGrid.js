@@ -37,6 +37,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.GridHeaderHeight = 0;
         this.CellBackColor = "#FFFFFF";
         this.CellHighlightBackColor = "#AAAAAA";
+        this.RowSelectedBackColor = "#BBBBBB";
         this.AlternateCellBackColor = "#30F030";
         this.AlternateRowColoring = false;
         this.CellForeColor = "#000000";
@@ -47,6 +48,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.HoverHighlight = true;
         this.RowHoveredOver = -1;
         this.CELLCLICKEDINFO = null;
+        this.SelectedRow = -1;
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
         this.MaximumHorizontalOffset = 0;
@@ -67,8 +69,13 @@ var LCTDataGrid = /** @class */ (function () {
         };
         this.HandleDoubleClick = function (ev) {
             if (_this.CELLCLICKEDINFO.ROWCLICKED != -1) {
+                if (_this.SelectedRow != _this.CELLCLICKEDINFO.ROWCLICKED)
+                    _this.SelectedRow = _this.CELLCLICKEDINFO.ROWCLICKED;
                 _this.TheCanvas.dispatchEvent(_this.CellDoubleClickedEvent);
                 ev.preventDefault();
+            }
+            else {
+                _this.SelectedRow = -1;
             }
             //ev.preventDefault();
         };
@@ -406,10 +413,17 @@ var LCTDataGrid = /** @class */ (function () {
                 }
                 if (therow != -1 && thecol != -1) {
                     // lets get the value 
-                    _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol, _this.GridHeader[thecol]);
-                    _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
+                    if (therow === _this.SelectedRow) {
+                        _this.SelectedRow = -1;
+                    }
+                    else {
+                        _this.SelectedRow = therow;
+                        _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol, _this.GridHeader[thecol]);
+                        _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
+                    }
                 }
                 else {
+                    _this.SelectedRow = -1;
                     _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA('', -1, -1, '');
                 }
             }
@@ -721,6 +735,12 @@ var LCTDataGrid = /** @class */ (function () {
         this.GridColAlignments = TheColAlignments;
         this.FillCanvas();
     };
+    LCTDataGrid.prototype.SetSelectedRow = function (TheRowToHighlight) {
+        if (TheRowToHighlight < this.GridRows.length) {
+            this.SelectedRow = TheRowToHighlight;
+            this.FillCanvas();
+        }
+    };
     LCTDataGrid.prototype.ClearGridContents = function () {
         this.GridHeader = [];
         this.GridRows = [];
@@ -896,7 +916,13 @@ var LCTDataGrid = /** @class */ (function () {
                             ctx.fillStyle = this.CellHighlightBackColor;
                         }
                         else {
-                            ctx.fillStyle = this.AlternateCellBackColor;
+                            if (_currow == this.SelectedRow) {
+                                // here we want to highlight the row that has been selected
+                                ctx.fillStyle = this.RowSelectedBackColor;
+                            }
+                            else {
+                                ctx.fillStyle = this.AlternateCellBackColor;
+                            }
                         }
                     }
                 }
@@ -905,7 +931,13 @@ var LCTDataGrid = /** @class */ (function () {
                         ctx.fillStyle = this.CellHighlightBackColor;
                     }
                     else {
-                        ctx.fillStyle = this.CellBackColor;
+                        if (_currow == this.SelectedRow) {
+                            // here we want to highlight the row that has been selected
+                            ctx.fillStyle = this.RowSelectedBackColor;
+                        }
+                        else {
+                            ctx.fillStyle = this.CellBackColor;
+                        }
                     }
                 }
                 ctx.fillRect(lx - this.HorizontalOffset, ly - this.VerticleOffset, this.CellWidths[_curcol], hei);
