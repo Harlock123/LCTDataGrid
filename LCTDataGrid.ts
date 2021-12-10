@@ -139,6 +139,20 @@ class LCTDataGrid {
     this.InitializeGridParameters();
   }
 
+  SetGridRows(ARR: string[])
+  {
+    this.GridRows = ARR;
+    this.RowHoveredOver = -1;
+    this.SelectedRow = -1;
+    this.HorizontalOffset = 0;
+    this.VerticleOffset = 0;
+    this.HorizontalScrollBarVisible = false;
+    this.VerticleScrollBarVisible = false;
+
+    this.FillCanvas();
+
+  }
+
   ApplyCustomCSSAttributes() {
     // Extract From Any custom CSS here
 
@@ -506,7 +520,10 @@ class LCTDataGrid {
     this.MaximumVerticleOffset = 0;
   }
 
+
+
   FillCanvas() {
+    //this.InitializeGridParameters();
     this.resize();
     this.ClearCanvas();
     this.RedrawCanvas();
@@ -1037,7 +1054,6 @@ class LCTDataGrid {
   HandleKeyUp(ev: _KeyboardEvent) {
     this.DOCONSOLE(ev.keyCode);
   }
-
 
   HandleContextMenu(ev: Event) {
     // right mousebutton context menu

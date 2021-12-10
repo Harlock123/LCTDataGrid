@@ -499,6 +499,16 @@ var LCTDataGrid = /** @class */ (function () {
         this.ApplyCustomCSSAttributes();
         this.InitializeGridParameters();
     }
+    LCTDataGrid.prototype.SetGridRows = function (ARR) {
+        this.GridRows = ARR;
+        this.RowHoveredOver = -1;
+        this.SelectedRow = -1;
+        this.HorizontalOffset = 0;
+        this.VerticleOffset = 0;
+        this.HorizontalScrollBarVisible = false;
+        this.VerticleScrollBarVisible = false;
+        this.FillCanvas();
+    };
     LCTDataGrid.prototype.ApplyCustomCSSAttributes = function () {
         // Extract From Any custom CSS here
         var TheCSS = window.getComputedStyle(document.getElementsByClassName(this.TheCanvas.className)[0]);
@@ -765,6 +775,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.MaximumVerticleOffset = 0;
     };
     LCTDataGrid.prototype.FillCanvas = function () {
+        //this.InitializeGridParameters();
         this.resize();
         this.ClearCanvas();
         this.RedrawCanvas();
