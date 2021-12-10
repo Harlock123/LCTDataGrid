@@ -65,6 +65,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.CellClickedEvent = document.createEvent("Event");
         this.CellHoveredEvent = document.createEvent("Event");
         this.CellDoubleClickedEvent = document.createEvent("Event");
+        this.GridMousedOverEvent = document.createEvent("Event");
+        this.GridMouseOutEvent = document.createEvent("Event");
         this.resizeCanvas = function (ev) {
             _this.resize;
             _this.FillCanvas();
@@ -91,6 +93,7 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.LastMouseY = ev.touches[0].clientY;
                 _this.ScrollButtonDown = true;
             }
+            _this.TheCanvas.dispatchEvent(_this.GridMousedOverEvent);
             ev.preventDefault(); // Eat the touch if its on the canvas
         };
         this.HandleTouchEnd = function (ev) {
@@ -449,6 +452,7 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.RowHoveredOver = -1;
                 _this.FillCanvas();
             }
+            _this.TheCanvas.dispatchEvent(_this.GridMouseOutEvent);
             ev.preventDefault();
         };
         this.HandleMouseIn = function (ev) {
@@ -460,6 +464,7 @@ var LCTDataGrid = /** @class */ (function () {
                 _this.LastMouseY = 0;
                 _this.ScrollButtonDown = false;
             }
+            _this.TheCanvas.dispatchEvent(_this.GridMousedOverEvent);
             ev.preventDefault();
             //this.LastMouseX = 0;
             //this.LastMouseY = 0;
@@ -493,6 +498,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.CellClickedEvent = new CustomEvent("CELLCLICKED", { bubbles: true, cancelable: true });
         this.CellHoveredEvent = new CustomEvent("CELLHOVERED", { bubbles: true, cancelable: true });
         this.CellDoubleClickedEvent = new CustomEvent("CELLDOUBLECLICKED", { bubbles: true, cancelable: true });
+        this.GridMousedOverEvent = new CustomEvent("MOUSEDOVER", { bubbles: true, cancelable: true });
+        this.GridMouseOutEvent = new CustomEvent("MOUSEOUT", { bubbles: true, cancelable: true });
         //this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
         //this.CellHoveredEvent.initEvent('CELLHOVERED', true, true);
         //this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED',true,true);

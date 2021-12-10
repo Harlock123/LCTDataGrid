@@ -84,6 +84,8 @@ class LCTDataGrid {
   CellClickedEvent = document.createEvent("Event");
   CellHoveredEvent = document.createEvent("Event");
   CellDoubleClickedEvent = document.createEvent("Event");
+  GridMousedOverEvent = document.createEvent("Event");
+  GridMouseOutEvent = document.createEvent("Event");
 
 // #endregion
 
@@ -122,11 +124,15 @@ class LCTDataGrid {
 
     this.TheCanvas.addEventListener("keyup",this.HandleKeyUp);
     
-    this.CellClickedEvent = new CustomEvent("CELLCLICKED",{bubbles: true,cancelable: true})
+    this.CellClickedEvent = new CustomEvent("CELLCLICKED",{bubbles: true,cancelable: true});
 
-    this.CellHoveredEvent = new CustomEvent("CELLHOVERED",{bubbles: true,cancelable: true})
+    this.CellHoveredEvent = new CustomEvent("CELLHOVERED",{bubbles: true,cancelable: true});
 
-    this.CellDoubleClickedEvent = new CustomEvent("CELLDOUBLECLICKED",{bubbles: true,cancelable: true})
+    this.CellDoubleClickedEvent = new CustomEvent("CELLDOUBLECLICKED",{bubbles: true,cancelable: true});
+
+    this.GridMousedOverEvent = new CustomEvent("MOUSEDOVER",{bubbles: true,cancelable: true});
+
+    this.GridMouseOutEvent = new CustomEvent("MOUSEOUT",{bubbles: true,cancelable: true});
 
     //this.CellClickedEvent.initEvent('CELLCLICKED', true, true);
 
@@ -519,8 +525,6 @@ class LCTDataGrid {
     this.MaximumHorizontalOffset = 0;
     this.MaximumVerticleOffset = 0;
   }
-
-
 
   FillCanvas() {
     //this.InitializeGridParameters();
@@ -1097,6 +1101,8 @@ class LCTDataGrid {
       this.ScrollButtonDown = true;
     }
 
+    this.TheCanvas.dispatchEvent(this.GridMousedOverEvent);
+
     ev.preventDefault(); // Eat the touch if its on the canvas
   };
 
@@ -1631,6 +1637,8 @@ class LCTDataGrid {
       this.FillCanvas();
     }
 
+    this.TheCanvas.dispatchEvent(this.GridMouseOutEvent);
+
     ev.preventDefault();
   }
 
@@ -1646,6 +1654,8 @@ class LCTDataGrid {
       this.LastMouseY = 0;
       this.ScrollButtonDown = false;
     }
+
+    this.TheCanvas.dispatchEvent(this.GridMousedOverEvent);
 
     ev.preventDefault();
     //this.LastMouseX = 0;

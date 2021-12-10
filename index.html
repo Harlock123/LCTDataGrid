@@ -73,6 +73,17 @@
 
         DG.FillCanvas();
 
+        el.addEventListener('MOUSEOUT',
+            function(e) {
+                document.getElementById('MOUSELBL').innerHTML = "";
+            },true);
+
+
+        el.addEventListener('MOUSEDOVER',
+            function(e) {
+                document.getElementById('MOUSELBL').innerHTML = "MOUSING OVER GRID";
+            },true);
+
         el.addEventListener('CELLCLICKED', 
             function (e) { 
                 var v = "Cell Clicked \n" + 
@@ -189,6 +200,8 @@
     <textarea aria-label="Clicked Status" id="MOUSECLICKAREA" rows=6 cols=40></textarea>
     <textarea aria-label="Hover Status" id="MOUSEHOVERAREA" rows=6 cols=40></textarea>
     <textarea aria-label="Double Click Status" id="MOUSEDBLCLICK" rows=6 cols=40></textarea>
+    <br>
+    <label id="MOUSELBL"></label>
     <!--
 
     <input type="button" onclick="SP.SetBackgroundColor('#ff9999')" id="btn2" value="Red Background">
