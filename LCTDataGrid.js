@@ -58,6 +58,8 @@ var LCTDataGrid = /** @class */ (function () {
         this.LastMouseY = 0;
         this.CalculatedHorizontalScale = 0;
         this.CalculatedVerticleScale = 0;
+        // turn on or off console logging
+        this.DoConsoleLogging = true; // on by default
         this.colwidths = [];
         // Event declarations for the grid
         this.CellClickedEvent = document.createEvent("Event");
@@ -173,9 +175,9 @@ var LCTDataGrid = /** @class */ (function () {
         };
         this.HandleMouseWheel = function (ev) {
             ev.preventDefault();
-            console.log(ev.deltaY);
-            console.log(ev.deltaX);
-            console.log(ev.deltaZ);
+            _this.DOCONSOLE(ev.deltaY);
+            _this.DOCONSOLE(ev.deltaX);
+            _this.DOCONSOLE(ev.deltaZ);
             if (_this.VerticleScrollBarVisible && !ev.ctrlKey) {
                 _this.VerticleOffset += ev.deltaY / 2;
                 if (_this.VerticleOffset < 0) {
@@ -216,13 +218,13 @@ var LCTDataGrid = /** @class */ (function () {
                     // moving left to right
                     var delta = ev.offsetX - _this.LastMouseX;
                     //var scale = this.CalculatedGridWidthTotal / delta;
-                    console.log("LastMouseX       :" + _this.LastMouseX);
-                    console.log("Horizontal Offset:" + _this.HorizontalOffset);
-                    console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
-                    console.log("Maximum Offset   :" + _this.MaximumHorizontalOffset);
-                    console.log("Delta            :" + delta);
-                    console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
-                    console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                    _this.DOCONSOLE("LastMouseX       :" + _this.LastMouseX);
+                    _this.DOCONSOLE("Horizontal Offset:" + _this.HorizontalOffset);
+                    _this.DOCONSOLE("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                    _this.DOCONSOLE("Maximum Offset   :" + _this.MaximumHorizontalOffset);
+                    _this.DOCONSOLE("Delta            :" + delta);
+                    _this.DOCONSOLE("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                    _this.DOCONSOLE("VerticleScale    :" + _this.CalculatedVerticleScale);
                     _this.HorizontalOffset += delta * _this.CalculatedHorizontalScale;
                     //this.HorizontalOffset += ev.offsetX - this.LastMouseX; //delta * scale; //ev.offsetX - this.LastMouseX;
                     //if (this.HorizontalOffset>0)
@@ -239,13 +241,13 @@ var LCTDataGrid = /** @class */ (function () {
                     if (_this.LastMouseX > ev.offsetX) {
                         // scrolling right to left
                         var delta = _this.LastMouseX - ev.offsetX;
-                        console.log("LastMouseX       :" + _this.LastMouseX);
-                        console.log("Horizontal Offset:" + _this.HorizontalOffset);
-                        console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
-                        console.log("Maximum Offset   :" + _this.MaximumHorizontalOffset);
-                        console.log("Delta            :" + delta);
-                        console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
-                        console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                        _this.DOCONSOLE("LastMouseX       :" + _this.LastMouseX);
+                        _this.DOCONSOLE("Horizontal Offset:" + _this.HorizontalOffset);
+                        _this.DOCONSOLE("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                        _this.DOCONSOLE("Maximum Offset   :" + _this.MaximumHorizontalOffset);
+                        _this.DOCONSOLE("Delta            :" + delta);
+                        _this.DOCONSOLE("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                        _this.DOCONSOLE("VerticleScale    :" + _this.CalculatedVerticleScale);
                         _this.HorizontalOffset -= delta * _this.CalculatedHorizontalScale;
                         //this.HorizontalOffset -= this.LastMouseX - ev.offsetX;
                         if (_this.HorizontalOffset < 0) {
@@ -261,13 +263,13 @@ var LCTDataGrid = /** @class */ (function () {
                 if (_this.LastMouseY < ev.offsetY) {
                     // moving Down
                     var delta = ev.offsetY - _this.LastMouseY;
-                    console.log("LastMouseY       :" + _this.LastMouseY);
-                    console.log("Verticle Offset  :" + _this.VerticleOffset);
-                    console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
-                    console.log("Maximum Offset   :" + _this.MaximumVerticleOffset);
-                    console.log("Delta            :" + delta);
-                    console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
-                    console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                    _this.DOCONSOLE("LastMouseY       :" + _this.LastMouseY);
+                    _this.DOCONSOLE("Verticle Offset  :" + _this.VerticleOffset);
+                    _this.DOCONSOLE("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                    _this.DOCONSOLE("Maximum Offset   :" + _this.MaximumVerticleOffset);
+                    _this.DOCONSOLE("Delta            :" + delta);
+                    _this.DOCONSOLE("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                    _this.DOCONSOLE("VerticleScale    :" + _this.CalculatedVerticleScale);
                     _this.VerticleOffset += delta * _this.CalculatedVerticleScale; //ev.offsetY - this.LastMouseY;
                     //if (this.HorizontalOffset>0)
                     //{
@@ -283,13 +285,13 @@ var LCTDataGrid = /** @class */ (function () {
                     if (_this.LastMouseY > ev.offsetY) {
                         // scrolling UP
                         var delta = _this.LastMouseY - ev.offsetY;
-                        console.log("LastMouseY       :" + _this.LastMouseY);
-                        console.log("Verticle Offset  :" + _this.VerticleOffset);
-                        console.log("Grid Width Total :" + _this.CalculatedGridWidthTotal);
-                        console.log("Maximum Offset   :" + _this.MaximumVerticleOffset);
-                        console.log("Delta            :" + delta);
-                        console.log("HorizontalScale  :" + _this.CalculatedHorizontalScale);
-                        console.log("VerticleScale    :" + _this.CalculatedVerticleScale);
+                        _this.DOCONSOLE("LastMouseY       :" + _this.LastMouseY);
+                        _this.DOCONSOLE("Verticle Offset  :" + _this.VerticleOffset);
+                        _this.DOCONSOLE("Grid Width Total :" + _this.CalculatedGridWidthTotal);
+                        _this.DOCONSOLE("Maximum Offset   :" + _this.MaximumVerticleOffset);
+                        _this.DOCONSOLE("Delta            :" + delta);
+                        _this.DOCONSOLE("HorizontalScale  :" + _this.CalculatedHorizontalScale);
+                        _this.DOCONSOLE("VerticleScale    :" + _this.CalculatedVerticleScale);
                         _this.VerticleOffset -= delta * _this.CalculatedVerticleScale; //ev.offsetY - this.LastMouseY;
                         //this.VerticleOffset -= this.LastMouseY - ev.offsetY;
                         if (_this.VerticleOffset < 0) {
@@ -860,6 +862,10 @@ var LCTDataGrid = /** @class */ (function () {
         this.CalculatedHorizontalScale = this.CalculatedGridWidthTotal / this.TheCanvas.width;
         this.CalculatedVerticleScale = this.CalculatedGridHeightTotal / this.TheCanvas.height;
     };
+    LCTDataGrid.prototype.DOCONSOLE = function (LOGVAL) {
+        if (this.DoConsoleLogging)
+            console.log(LOGVAL);
+    };
     LCTDataGrid.prototype.CalculateTitleHeightAndHeaderHeight = function () {
         var ctx = this.TheCanvas.getContext("2d");
         if (this.TitleVisible) {
@@ -991,13 +997,15 @@ var LCTDataGrid = /** @class */ (function () {
         }
         // Here we want to see of the VIEW is smaller than the 
         // content and if so we need to show some scrollbars
-        console.log("Canvas Width: " + this.TheCanvas.width);
-        console.log("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
-        console.log("HorizontalOffset: " + this.HorizontalOffset);
+        if (this.DoConsoleLogging) {
+            this.DOCONSOLE("Canvas Width: " + this.TheCanvas.width);
+            this.DOCONSOLE("Calculed Grid Width: " + this.CalculatedGridWidthTotal);
+            this.DOCONSOLE("HorizontalOffset: " + this.HorizontalOffset);
+        }
         // Calculate if ScrollBars are visible...
         if (this.TheCanvas.width < this.CalculatedGridWidthTotal) {
             // we are narrower
-            console.log("Narrower");
+            this.DOCONSOLE("Narrower");
             // OK so lets Draw a slider along the bottom
             ctx.fillStyle = this.SliderBackColor;
             ctx.fillRect(0, this.TheCanvas.height - this.SliderThickness, this.TheCanvas.width, this.SliderThickness);
@@ -1022,7 +1030,7 @@ var LCTDataGrid = /** @class */ (function () {
         if (this.TheCanvas.height < cheight) // this.CalculatedGridHeightTotal)
          {
             // we are shorter
-            console.log("Shorter");
+            this.DOCONSOLE("Shorter");
             ctx.fillStyle = this.SliderBackColor;
             ctx.fillRect(this.TheCanvas.width - this.SliderThickness, 0, this.SliderThickness, this.TheCanvas.height);
             ctx.strokeStyle = this.SliderForeColor;
@@ -1105,15 +1113,15 @@ var LCTDataGrid = /** @class */ (function () {
     };
     // Event Handlers
     LCTDataGrid.prototype.HandleKeyDown = function (ev) {
-        console.log(ev.keyCode);
+        this.DOCONSOLE(ev.keyCode);
     };
     LCTDataGrid.prototype.HandleKeyUp = function (ev) {
-        console.log(ev.keyCode);
+        this.DOCONSOLE(ev.keyCode);
     };
     LCTDataGrid.prototype.HandleContextMenu = function (ev) {
         // right mousebutton context menu
-        console.log("Context Menu");
-        console.log(ev);
+        this.DOCONSOLE("Context Menu");
+        this.DOCONSOLE(ev);
     };
     LCTDataGrid.prototype.GetImage = function () {
         return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';
