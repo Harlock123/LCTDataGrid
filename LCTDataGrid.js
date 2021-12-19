@@ -49,6 +49,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.RowHoveredOver = -1;
         this.CELLCLICKEDINFO = null;
         this.SelectedRow = -1;
+        this.SelectedRows = [];
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
         this.MaximumHorizontalOffset = 0;
@@ -419,10 +420,35 @@ var LCTDataGrid = /** @class */ (function () {
                 if (therow != -1 && thecol != -1) {
                     // lets get the value 
                     if (therow === _this.SelectedRow) {
-                        _this.SelectedRow = -1;
+                        if (ev.shiftKey) {
+                            _this.SelectedRow = -1;
+                            _this.RemoveRowFromSelectedRows(therow);
+                        }
+                        else {
+                            _this.SelectedRow = -1;
+                            _this.SelectedRows = [];
+                        }
                     }
                     else {
-                        _this.SelectedRow = therow;
+                        if (_this.SelectedRows.indexOf(therow) >= 0) {
+                            if (ev.shiftKey) {
+                                _this.RemoveRowFromSelectedRows(therow);
+                            }
+                            else {
+                                _this.SelectedRows = [];
+                            }
+                        }
+                        else {
+                            _this.SelectedRow = therow;
+                            if (ev.shiftKey) {
+                                _this.RemoveRowFromSelectedRows(therow);
+                                _this.SelectedRows.push(therow);
+                            }
+                            else {
+                                _this.SelectedRows = [];
+                                _this.SelectedRows.push(therow);
+                            }
+                        }
                         _this.CELLCLICKEDINFO = new CELLCLICKEDMETADATA(_this.GridRows[therow][thecol], therow, thecol, _this.GridHeader[thecol]);
                         _this.TheCanvas.dispatchEvent(_this.CellClickedEvent);
                     }
@@ -510,6 +536,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.GridRows = ARR;
         this.RowHoveredOver = -1;
         this.SelectedRow = -1;
+        this.SelectedRows = [];
         this.HorizontalOffset = 0;
         this.VerticleOffset = 0;
         this.HorizontalScrollBarVisible = false;
@@ -760,6 +787,15 @@ var LCTDataGrid = /** @class */ (function () {
             this.FillCanvas();
         }
     };
+    LCTDataGrid.prototype.SetSelectedRows = function (TheRowsToHighlight) {
+        this.SelectedRows = [];
+        TheRowsToHighlight.forEach(function (i) {
+            if (i < this.GridRows.length) {
+                this.SelectedRows.add(i);
+            }
+        });
+        this.FillCanvas();
+    };
     LCTDataGrid.prototype.ClearGridContents = function () {
         this.GridHeader = [];
         this.GridRows = [];
@@ -767,6 +803,8 @@ var LCTDataGrid = /** @class */ (function () {
     };
     LCTDataGrid.prototype.InitializeGridParameters = function () {
         this.ScrollButtonDown = false;
+        this.SelectedRows = [];
+        this.SelectedRow = -1;
         this.LastMouseX = 0;
         this.LastMouseY = 0;
         this.lastx = 0;
@@ -940,7 +978,7 @@ var LCTDataGrid = /** @class */ (function () {
                             ctx.fillStyle = this.CellHighlightBackColor;
                         }
                         else {
-                            if (_currow == this.SelectedRow) {
+                            if (_currow == this.SelectedRow || this.SelectedRows.indexOf(_currow) >= 0) {
                                 // here we want to highlight the row that has been selected
                                 ctx.fillStyle = this.RowSelectedBackColor;
                             }
@@ -955,7 +993,7 @@ var LCTDataGrid = /** @class */ (function () {
                         ctx.fillStyle = this.CellHighlightBackColor;
                     }
                     else {
-                        if (_currow == this.SelectedRow) {
+                        if (_currow == this.SelectedRow || this.SelectedRows.indexOf(_currow) >= 0) {
                             // here we want to highlight the row that has been selected
                             ctx.fillStyle = this.RowSelectedBackColor;
                         }
@@ -1143,6 +1181,13 @@ var LCTDataGrid = /** @class */ (function () {
     };
     LCTDataGrid.prototype.GetImage = function () {
         return '<img src="' + this.TheCanvas.toDataURL("image/png") + '"/>';
+    };
+    LCTDataGrid.prototype.RemoveRowFromSelectedRows = function (element) {
+        var _this = this;
+        this.SelectedRows.forEach(function (value, index) {
+            if (value == element)
+                _this.SelectedRows.splice(index, 1);
+        });
     };
     return LCTDataGrid;
 }());
