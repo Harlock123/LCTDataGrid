@@ -41,6 +41,78 @@ For Grid contents where Scrollbars appear...
 - CTRL MouseWheel will scroll left and right
 - If there is only a bottom scrollbar visible Mousewheel will scroll left and right without CTRLS
 
+## Properties
+
+Most of these property names are self explanatory Type and default values are shown. Additional explanation where meaning might be ambiguous 
+
+- HorizontalScrollBarVisible: boolean = false;
+- VerticleScrollBarVisible: boolean = false;
+- SliderBackColor: string = "#FFFFFF";
+- SliderForeColor: string = "#3f3f3f";
+- SliderThickness: number = 10;
+- CalculatedGridHeightTotal: number = 0;<br>
+        This represents the total height of the grid fully rendered (Not its on-screen representation)
+- CalculatedGridWidthTotal: number = 0;><br>
+        This represents the total width of the grid full rendered (Not its onscreen representation)
+
+- linecolor: string = "#000000";
+- backcolor: string = "#C0C0C0";
+
+- OutlineOn: boolean = true;
+- OutlineColor: string = "#808080";
+
+- Title: string = "Grid Title Here";
+- TitleHeight: number = 15;
+- TitleBackColor: string = "#3030C0";
+- TitleForeColor: string = "#FFFFFF";
+- TitleVisible: boolean = true;
+- TitleFont: string = "18pt Courier";
+
+- GridHeaderVisible: boolean = true;
+- GridHeaderBackColor: string = "#FFFF00";
+- GridHeaderForeColor: string = "#000000";
+- GridHeaderOutlineColor: string = "#808080";
+- GridHeaderFont: string = "14pt Courier";
+
+- GridHeader: string[] = [];<br>
+        Single dimensional array of the Column labels applied to the grids contents 
+- GridRows: string[] = [];<br>
+        2 Dimensional array of the grids actual displayed values 
+- GridColAlignments: string[];<br>
+        Single Dimensional array of "","LEFT","CENTER","RIGHT" values for forced cell alignment of content.<br>
+        Yet to be implemented 
+- GridHeaderHeight: number = 0;
+
+- CellBackColor: string = "#FFFFFF";
+- CellHighlightBackColor: string = "#AAAAAA";
+- RowSelectedBackColor: string = "#BBBBBB";
+- AlternateCellBackColor: string = "#30F030";
+- AlternateRowColoring: boolean = false;<br>
+        Forced Alternate row background coloring IE The Greenbar effect
+- CellForeColor: string = "#000000";
+- CellOutlineColor: string = "#808080";
+- CellFont: string = "14pt Courier";
+- CellWidths: number[] = [];
+- CellHeights: number[] = [];
+
+- HoverHighlight: boolean = true;
+- RowHoveredOver: number = -1;
+
+- SelectedRow: number =-1;
+- SelectedRows: number[] = [];
+
+- HorizontalOffset: number = 0;
+- VerticleOffset: number = 0;
+- MaximumHorizontalOffset: number = 0;
+- MaximumVerticleOffset: number = 0;
+- ScrollButtonDown: boolean = false;
+
+- CalculatedHorizontalScale: number = 0;
+- CalculatedVerticleScale: number = 0;
+
+- DoConsoleLogging = true; // on by default
+
+
 ## Screenshots
 
 Shown below is the grid running the Large Query Test from its testing harness in both Chromium and Edge in Linux...

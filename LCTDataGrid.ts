@@ -517,10 +517,15 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
+  ClearSelectedRows() {
+    this.SetSelectedRows([]);
+  }
+
   ClearGridContents() {
     this.GridHeader = [];
     this.GridRows = [];
     this.InitializeGridParameters();
+    this.FillCanvas();
   }
 
   private InitializeGridParameters() {
@@ -1733,7 +1738,7 @@ class LCTDataGrid {
     this.SelectedRows.forEach((value,index)=>{
         if(value==element) this.SelectedRows.splice(index,1);
     });
-}
+  }
 }
 
 class CELLCLICKEDMETADATA {
