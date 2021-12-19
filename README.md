@@ -39,6 +39,7 @@ For Grid contents where Scrollbars appear...
 
 - MouseWheel will scroll up and down
 - CTRL MouseWheel will scroll left and right
+- If there is only a bottom scrollbar visible Mousewheel will scroll left and right without CTRLS
 
 ## Screenshots
 
