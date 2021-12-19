@@ -112,6 +112,59 @@ Most of these property names are self explanatory Type and default values are sh
 
 - DoConsoleLogging = true; // on by default
 
+## Methods
+
+-  SetGridOutlineColor(col: string) 
+-  SetCellBackColor(col: string) 
+-  SetCellForeColor(col: string) 
+-  SetAlternateCellBackColor(col: string) 
+-  SetHoverHighlight(trigger: boolean) 
+-  SetAlternateRowColoring(trigger: boolean) 
+-  SetTitleBackColor(col: string) 
+-  SetTitleForeColor(col: string) 
+-  SetTitleFont(fnt: string) 
+-  SetTitle(title: string) 
+-  SetTitleVisible(flag: boolean) 
+-  SetHeaderVisible(flag: boolean) 
+-  SetHeaderBackgroundColor(col: string) 
+-  SetHeaderForeGroundColor(col: string) 
+-  SetHeaderOutlineColor(col: string) 
+-  SetBackgroundColor(col: string) 
+-  SetHeaderFont(fnt: string) 
+-  SetDrawColor(col: string) 
+-  SetSliderBackColor(col: string) 
+-  SetSliderForeColor(col: string) 
+-  SetSliderThickness(val: number) 
+-  SetGridRowsJSON(TheRows: string)
+-  SetGridColAlignments(TheColAlignments: string[]) 
+-  SetSelectedRow(TheRowToHighlight: number) 
+-  SetSelectedRows(TheRowsToHighlight: number[])
+-  ClearSelectedRows() 
+-  ClearGridContents() 
+-  FillCanvas() 
+-  RedrawCanvas() 
+-  PopulateFromJSONUrl(DukeOfURL: string) 
+-  SetDataFromJSONCall(data: any) 
+-  SetGridHeader(Headers: string[]) 
+-  GetImage() 
+
+  // Event Handlers
+
+-  HandleKeyDown(ev: _KeyboardEvent) 
+-  HandleKeyUp(ev: _KeyboardEvent) 
+-  HandleContextMenu(ev: Event) 
+-  HandleDoubleClick = (ev: MouseEvent)   
+-  HandleTouchStart = (ev: TouchEvent)  
+-  HandleTouchEnd = (ev: TouchEvent)
+-  HandleTouchMove = (ev: TouchEvent) 
+-  HandleMouseWheel = (ev: WheelEvent)
+-  HandleMouseMove = (ev: MouseEvent) 
+-  HandleMouseDown = (ev: MouseEvent) 
+-  HandleMouseUp = (ev: MouseEvent) 
+-  HandleMouseOut = (ev: MouseEvent)
+-  HandleMouseIn = (ev: MouseEvent) 
+
+
 
 ## Screenshots
 
