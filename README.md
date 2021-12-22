@@ -148,8 +148,8 @@ Most of these property names are self explanatory Type and default values are sh
 -  SetGridHeader(Headers: string[]) 
 -  GetImage() 
 
-  // Event Handlers
-
+  // Event Handlers Internal
+  
 -  HandleKeyDown(ev: _KeyboardEvent) 
 -  HandleKeyUp(ev: _KeyboardEvent) 
 -  HandleContextMenu(ev: Event) 
@@ -164,6 +164,63 @@ Most of these property names are self explanatory Type and default values are sh
 -  HandleMouseOut = (ev: MouseEvent)
 -  HandleMouseIn = (ev: MouseEvent) 
 
+Events Bubbled Out to container
+
+Taken from the Index Page where we wire up events manually
+
+```
+        el.addEventListener('MOUSEOUT',
+            function(e) {
+                document.getElementById('MOUSELBL').innerHTML = "";
+            },true);
+
+
+        el.addEventListener('MOUSEDOVER',
+            function(e) {
+                document.getElementById('MOUSELBL').innerHTML = "MOUSING OVER GRID";
+            },true);
+
+        el.addEventListener('CELLCLICKED', 
+            function (e) { 
+                var v = "Cell Clicked \n" + 
+                    DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + 
+                    DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + 
+                    DG.CELLCLICKEDINFO.COLCLICKED + "\n LABELED " +
+                    DG.CELLCLICKEDINFO.COLNAME;
+                
+                    var el = document.getElementById('MOUSECLICKAREA');
+
+                    el.innerHTML = v;
+                }, true);
+
+        el.addEventListener('CELLHOVERED', 
+            function (e) { 
+                var v = "Cell Hovered \n" + 
+                    DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + 
+                    DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + 
+                    DG.CELLCLICKEDINFO.COLCLICKED + "\n LABELED " +
+                    DG.CELLCLICKEDINFO.COLNAME;
+                
+                    var el = document.getElementById('MOUSEHOVERAREA');
+
+                    el.innerHTML = v;
+                }, true);
+
+        el.addEventListener('CELLDOUBLECLICKED',
+            function (e) {
+                var v = "Cell DoubleClicked \n" + 
+                    DG.CELLCLICKEDINFO.CELLCLICKED + "\n ON ROW " + 
+                    DG.CELLCLICKEDINFO.ROWCLICKED + "\n ON COL " + 
+                    DG.CELLCLICKEDINFO.COLCLICKED + "\n LABELED " +
+                    DG.CELLCLICKEDINFO.COLNAME;
+                
+                    var el = document.getElementById('MOUSEDBLCLICK');
+
+                    el.innerHTML = v;
+                }, true);
+
+
+```
 
 
 ## Screenshots
