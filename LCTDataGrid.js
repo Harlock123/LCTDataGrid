@@ -796,10 +796,14 @@ var LCTDataGrid = /** @class */ (function () {
         });
         this.FillCanvas();
     };
+    LCTDataGrid.prototype.ClearSelectedRows = function () {
+        this.SetSelectedRows([]);
+    };
     LCTDataGrid.prototype.ClearGridContents = function () {
         this.GridHeader = [];
         this.GridRows = [];
         this.InitializeGridParameters();
+        this.FillCanvas();
     };
     LCTDataGrid.prototype.InitializeGridParameters = function () {
         this.ScrollButtonDown = false;
