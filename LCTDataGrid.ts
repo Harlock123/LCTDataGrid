@@ -70,6 +70,7 @@ class LCTDataGrid {
   MaximumHorizontalOffset: number = 0;
   MaximumVerticleOffset: number = 0;
   ScrollButtonDown: boolean = false;
+  ScrollMultiplier: number = 3;
   LastMouseX: number = 0;
   LastMouseY: number = 0;
 
@@ -517,6 +518,12 @@ class LCTDataGrid {
     this.FillCanvas();
   }
 
+  SetScrollMultiplier(Multiplier: number) {
+    
+    this.ScrollMultiplier = Multiplier;
+
+  }
+
   ClearSelectedRows() {
     this.SetSelectedRows([]);
   }
@@ -698,7 +705,7 @@ class LCTDataGrid {
 
   }
 
-  private DOCONSOLE(LOGVAL)
+  private DOCONSOLE(LOGVAL): void
   {
     if (this.DoConsoleLogging)
       console.log(LOGVAL);
@@ -1260,7 +1267,7 @@ class LCTDataGrid {
 
     if (this.VerticleScrollBarVisible && !ev.ctrlKey) {
 
-      this.VerticleOffset += ev.deltaY/2;
+      this.VerticleOffset += (ev.deltaY/2) * this.ScrollMultiplier;
 
       if (this.VerticleOffset < 0) {
         this.VerticleOffset = 0;
@@ -1276,7 +1283,7 @@ class LCTDataGrid {
     {
       if (this.HorizontalScrollBarVisible) {
 
-        this.HorizontalOffset += ev.deltaY ;
+        this.HorizontalOffset += ev.deltaY * this.ScrollMultiplier ;
   
         if (this.HorizontalOffset < 0) {
           this.HorizontalOffset = 0;

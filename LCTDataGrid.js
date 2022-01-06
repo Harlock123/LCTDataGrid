@@ -55,6 +55,7 @@ var LCTDataGrid = /** @class */ (function () {
         this.MaximumHorizontalOffset = 0;
         this.MaximumVerticleOffset = 0;
         this.ScrollButtonDown = false;
+        this.ScrollMultiplier = 3;
         this.LastMouseX = 0;
         this.LastMouseY = 0;
         this.CalculatedHorizontalScale = 0;
@@ -183,7 +184,7 @@ var LCTDataGrid = /** @class */ (function () {
             _this.DOCONSOLE(ev.deltaX);
             _this.DOCONSOLE(ev.deltaZ);
             if (_this.VerticleScrollBarVisible && !ev.ctrlKey) {
-                _this.VerticleOffset += ev.deltaY / 2;
+                _this.VerticleOffset += (ev.deltaY / 2) * _this.ScrollMultiplier;
                 if (_this.VerticleOffset < 0) {
                     _this.VerticleOffset = 0;
                 }
@@ -194,7 +195,7 @@ var LCTDataGrid = /** @class */ (function () {
             }
             else {
                 if (_this.HorizontalScrollBarVisible) {
-                    _this.HorizontalOffset += ev.deltaY;
+                    _this.HorizontalOffset += ev.deltaY * _this.ScrollMultiplier;
                     if (_this.HorizontalOffset < 0) {
                         _this.HorizontalOffset = 0;
                     }
@@ -795,6 +796,9 @@ var LCTDataGrid = /** @class */ (function () {
             }
         });
         this.FillCanvas();
+    };
+    LCTDataGrid.prototype.SetScrollMultiplier = function (Multiplier) {
+        this.ScrollMultiplier = Multiplier;
     };
     LCTDataGrid.prototype.ClearSelectedRows = function () {
         this.SetSelectedRows([]);
