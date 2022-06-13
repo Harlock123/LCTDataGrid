@@ -45,6 +45,9 @@ var LCTDataGrid = /** @class */ (function () {
         this.CellFont = "14pt Courier";
         this.CellWidths = [];
         this.CellHeights = [];
+        this.Images = new Array();
+        this.ImageCols = [];
+        this.ImageHeight = -1;
         this.HoverHighlight = true;
         this.RowHoveredOver = -1;
         this.CELLCLICKEDINFO = null;
@@ -532,6 +535,16 @@ var LCTDataGrid = /** @class */ (function () {
         //this.CellDoubleClickedEvent.initEvent('CELLDOUBLECLICKED',true,true);
         this.ApplyCustomCSSAttributes();
         this.InitializeGridParameters();
+        var DirImage = new Image();
+        DirImage.src = './IMGs/dir.png';
+        this.Images[0] = DirImage;
+        if (DirImage.height > this.ImageHeight)
+            this.ImageHeight = DirImage.height;
+        var FileImage = new Image();
+        FileImage.src = './IMGs/file.png';
+        this.Images[1] = FileImage;
+        if (FileImage.height > this.ImageHeight)
+            this.ImageHeight = FileImage.height;
     }
     LCTDataGrid.prototype.SetGridRows = function (ARR) {
         this.GridRows = ARR;
@@ -788,6 +801,44 @@ var LCTDataGrid = /** @class */ (function () {
             this.FillCanvas();
         }
     };
+    LCTDataGrid.prototype.SetImageColumn = function (ImageColumnId) {
+        var found = 0;
+        var self = this;
+        self.ImageCols.forEach(function (element) {
+            if (element == ImageColumnId) {
+                found = 1;
+            }
+        });
+        if (found == 0) {
+            self.ImageCols.push(ImageColumnId);
+            self.FillCanvas();
+        }
+    };
+    LCTDataGrid.prototype.ClearImageColumn = function (ImageColumnId) {
+        var found = 0;
+        var self = this;
+        var tempimagecols = [];
+        self.ImageCols.forEach(function (element) {
+            if (element == ImageColumnId) {
+                found = 1;
+            }
+            else {
+                tempimagecols.push(element);
+            }
+        });
+        if (found == 1) {
+            self.ImageCols = [];
+            tempimagecols.forEach(function (e) {
+                self.ImageCols.push(e);
+            });
+            self.FillCanvas();
+        }
+    };
+    LCTDataGrid.prototype.ClearAllImageColumns = function () {
+        var self = this;
+        self.ImageCols = [];
+        self.FillCanvas();
+    };
     LCTDataGrid.prototype.SetSelectedRows = function (TheRowsToHighlight) {
         this.SelectedRows = [];
         TheRowsToHighlight.forEach(function (i) {
@@ -868,6 +919,9 @@ var LCTDataGrid = /** @class */ (function () {
                 it = this.GridRows[_currow][_curcol] + "";
                 wid = 0; //ctx.measureText(it).width + 6;
                 hei = ctx.measureText("M").width * 1.2;
+                if (this.ImageCols.length > 0 && hei < this.ImageHeight) {
+                    hei = this.ImageHeight;
+                }
                 // figure out how many lines of output are in this text element
                 var thelines = [""];
                 if (it !== null) {
@@ -951,6 +1005,7 @@ var LCTDataGrid = /** @class */ (function () {
         }
     };
     LCTDataGrid.prototype.RedrawCanvas = function () {
+        var _this = this;
         var ctx = this.TheCanvas.getContext("2d");
         var cy = 0;
         this.CalculateColumnWidths();
@@ -959,6 +1014,7 @@ var LCTDataGrid = /** @class */ (function () {
         var hei = 0;
         var lx = 0;
         var ly = 0;
+        var imgdrawn = false;
         ctx.font = this.CellFont;
         ctx.fillStyle = this.CellBackColor;
         ctx.strokeStyle = this.CellOutlineColor;
@@ -967,9 +1023,12 @@ var LCTDataGrid = /** @class */ (function () {
             // iterrate over each row
             lx = 0;
             ly = cy;
+            imgdrawn = false;
             for (var _curcol = 0; _curcol < this.GridRows[_currow].length; _curcol++) {
                 // iterate over each column in the current row
                 hei = this.CellHeights[_currow];
+                if (this.ImageCols.length > 0 && hei < this.ImageHeight)
+                    hei = this.ImageHeight;
                 if (this.AlternateRowColoring) {
                     if (_currow % 2 == 0) {
                         // Its Even
@@ -1014,7 +1073,21 @@ var LCTDataGrid = /** @class */ (function () {
                 ctx.strokeStyle = this.CellOutlineColor;
                 ctx.strokeRect(lx - this.HorizontalOffset, ly - this.VerticleOffset, this.CellWidths[_curcol], hei);
                 ctx.fillStyle = this.CellForeColor;
-                this.fillTextMultiLine(ctx, this.GridRows[_currow][_curcol], lx + 3 - this.HorizontalOffset, ly + hei - 3 - this.VerticleOffset);
+                this.ImageCols.forEach(function (element) {
+                    if (element == _curcol) {
+                        // This is an Image column for now just display the Image first in the array
+                        // later we will make the image predicated on the text value that was supposed to be there
+                        ctx.drawImage(_this.Images[0], lx + 3 - _this.HorizontalOffset, ly - _this.VerticleOffset);
+                        imgdrawn = true;
+                    }
+                });
+                if (!imgdrawn) {
+                    this.fillTextMultiLine(ctx, this.GridRows[_currow][_curcol], lx + 3 - this.HorizontalOffset, ly + hei - 3 - this.VerticleOffset);
+                    imgdrawn = false;
+                }
+                else {
+                    imgdrawn = false;
+                }
                 //ctx.fillText(this.GridRows[_currow][_curcol], lx + 3, ly + hei-3);
                 lx = lx + this.CellWidths[_curcol];
             }
