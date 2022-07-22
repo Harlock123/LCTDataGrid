@@ -97,6 +97,14 @@ class LCTDataGrid {
 
   constructor(element: HTMLCanvasElement) {
     this.TheCanvas = element;
+
+    // Resize it here to support non blurry visuals
+    //var canvas = document.getElementById('canvas');
+    //this.TheCanvas.width = this.TheCanvas.getBoundingClientRect().width ;
+    //this.TheCanvas.height = this.TheCanvas.getBoundingClientRect().height ;
+
+
+
     //this.TheDiv = container;
 
     // Register an event listener to
@@ -377,8 +385,8 @@ class LCTDataGrid {
     this.TheCanvas.style.width = "100%";
     this.TheCanvas.style.height = "100%";
     // ...then set the internal size to match
-    this.TheCanvas.width = this.TheCanvas.offsetWidth;
-    this.TheCanvas.height = this.TheCanvas.offsetHeight;
+    this.TheCanvas.width = this.TheCanvas.getBoundingClientRect().width; //this.TheCanvas.offsetWidth;
+    this.TheCanvas.height = this.TheCanvas.getBoundingClientRect().height; //this.TheCanvas.offsetHeight;
   }
 
   resizeCanvas = (ev: UIEvent) => {
